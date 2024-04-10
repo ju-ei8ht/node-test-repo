@@ -1,4 +1,5 @@
-# WEBTOON ALERT (가제)
+# vvtoonA (가제)
+![logo](https://github.com/vvtoonA/node/assets/107831692/0c218bf1-3a7c-4315-8219-78fd97a9c120)
 
 ## BUILD
 * bun + express
@@ -11,6 +12,10 @@
 * Auth (한다면)
     - Passport
     - Kakao OAuth
+
+## ERD
+![ERD](https://github.com/vvtoonA/node/assets/107831692/f40e14f3-30ad-449a-8537-d4180f39167b)
+
 
 ## INTRO
 * 웹툰 보는데 여기저기 산재해 있어서 하나에서 몰아보고 싶다(북마크).
