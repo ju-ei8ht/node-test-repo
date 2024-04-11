@@ -1,5 +1,5 @@
 import express, { type Request, type Response } from 'express';
-import { allWebtoons } from '../service/WebtoonService';
+import { allWebtoons } from '../services/WebtoonService';
 
 const app = express();
 app.use(express.json());

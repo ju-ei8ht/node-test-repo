@@ -1,5 +1,5 @@
-import { DBManager, ORM } from '../config/db';
-import { webtoonS } from '../model/sequelize';
+import { DBManager, ORM } from '../configs/db';
+import { webtoonS } from '../models/sequelize';
 
 const dbManager = DBManager.getInstance();
 

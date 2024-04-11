@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import { DBManager } from '../config/db';
+import { DBManager } from '../configs/db';
 
 const webtoonModel = {
     tableName: 'webtoon',
@@ -29,34 +29,6 @@ const webtoonModel = {
         // 모델과 데이터베이스의 형식이 일치하는지 확인하지 않음
         freezeTableName: true,
         // timestamps 옵션을 false로 설정하여 createdAt 및 updatedAt 필드 생성하지 않음
-        timestamps: false
-    }
-};
-
-const linkModel = {
-    tableName: 'link',
-    definition:{
-        id: {
-            type: DataTypes.BIGINT,
-            primaryKey: true,
-            autoIncrement: true
-        },
-        url: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        webtoonId: {
-            type: DataTypes.BIGINT,
-            allowNull: false
-        },
-        platformId: {
-            type: DataTypes.BIGINT,
-            allowNull: false
-        }
-    },
-    options: {
-        tableName: 'link',
-        freezeTableName: true,
         timestamps: false
     }
 };
@@ -149,7 +121,6 @@ const webtoonS = sequelize.define(webtoonModel.tableName, webtoonModel.definitio
 const webtoonPlatformS = sequelize.define(webtoonPlatformModel.tableName, webtoonPlatformModel.definition, webtoonPlatformModel.options);
 const platformS = sequelize.define(platformModel.tableName, platformModel.definition, platformModel.options);
 const bookmarkS = sequelize.define(bookmarkModel.tableName, bookmarkModel.definition, bookmarkModel.options);
-
 
 webtoonS.hasMany(webtoonPlatformS);
 platformS.hasMany(webtoonPlatformS);
