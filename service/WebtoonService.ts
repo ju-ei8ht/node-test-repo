@@ -1,6 +1,5 @@
-import { DBManager, ORM } from './config/db';
-import { webtoonS } from './model/sequelize';
-import { MsgDTO } from './dto';
+import { DBManager, ORM } from '../config/db';
+import { webtoonS } from '../model/sequelize';
 
 const dbManager = DBManager.getInstance();
 
@@ -19,11 +18,7 @@ const dbManager = DBManager.getInstance();
 async function allWebtoons() {
     try {
         const sequelize = dbManager.getSequelize();
-        const result = await webtoonS.findAll();
-
-        if (result == null || result.length === 0) return new MsgDTO("empty");
-
-        return result;
+        return await webtoonS.findAll();
     } catch (error) {
         console.error('웹툰 조회 실패:', error);
         throw error;
