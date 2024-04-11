@@ -74,12 +74,14 @@ class DBManager {
         return drizzle(this.poolConnection);
     }
 
-    // 데이터베이스 연결과 테이블 동기화
+    /**
+     * sequelize 데이터베이스 연결과 테이블 동기화
+     */
     public async connect(orm: ORM) {
         try {
             if (orm == ORM.Sequelize) {
                 await this.sequelize.authenticate();
-                console.log('MySQL 데이터베이스와의 연결 성공!');
+                console.log('데이터베이스 연결 성공');
                 await this.sequelize.sync();
                 console.log('테이블이 동기화되었습니다.');
             }
