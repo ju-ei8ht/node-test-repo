@@ -1,28 +1,77 @@
-import { DBManager, ORM } from '../configs/db';
-import { webtoonS } from '../models/sequelize';
+import { DBManager } from '../configs/db';
+import { getMetadata, getOriginLink } from '../utils/MetadataUtil';
+import { WebtoonRepository } from '../repositories/WebtoonRepository';
+import { PlatformRepository } from '../repositories/PlatformRepository';
+import { LinkRepository } from '../repositories/LinkRepository';
+import { WebtoonPlatformRepository } from '../repositories/WebtoonPlatformRepository';
+import { SuccessDTO } from '../dtos/MsgDTO';
 
 const dbManager = DBManager.getInstance();
-
-(async () => {
-    try {
-        dbManager.connect(ORM.Sequelize);
-    } catch (error) {
-        console.error('데이터베이스 연결 실패:', error);
-        throw error;
-    }
-})();
+const webtoonRepository = WebtoonRepository.getInstance();
+const platformRepository = PlatformRepository.getInstance();
+const linkRepository = LinkRepository.getInstance();
+const webtoonPlatformRepository = WebtoonPlatformRepository.getInstance();
 
 /**
  * 모든 웹툰 조회
  */
 async function allWebtoons() {
     try {
-        const sequelize = dbManager.getSequelize();
-        return await webtoonS.findAll();
+        return await webtoonRepository.findAllWebtoonsWithSequelize();
     } catch (error) {
         console.error('웹툰 조회 실패:', error);
         throw error;
     }
 }
 
-export { allWebtoons }
+/**
+ * 웹툰 등록
+ */
+async function registerWebtoon(url: URL) {
+    const sequelize = dbManager.getSequelize();
+    const transaction = await sequelize.transaction();
+
+    try {
+        if(url.origin.includes('naver.me')) url = await getOriginLink(url.toString());
+        const path = url.pathname + url.search;
+
+        const existingUrl = await linkRepository.findLinkByUrlWithSequelize(path);
+
+        if(existingUrl) return new SuccessDTO("이미 등록 되었습니다.");
+
+        const data = await getMetadata(url);
+
+        // 이미 등록된 웹툰인지 확인
+        const title = data.getWebtoon().getTitle();
+        let webtoon = await webtoonRepository.findWebtoonByTitleWithSequelize(title);
+
+        // 웹툰 등록
+        if (!webtoon) webtoon = await webtoonRepository.saveWithSequelize(data, transaction);
+
+        // 이미 등록된 플랫폼인지 확인
+        const name = data.getPlatform().getName();
+        let platform = await platformRepository.findPlatformByNameWithSequelize(name);
+
+        // 플랫폼 등록
+        if (!platform) platform = await platformRepository.saveWithSequelize(data, transaction);
+
+        const webtoonId = webtoon.get().id;
+        const platformId = platform.get().id;
+
+        // 관계 설정
+        await webtoonPlatformRepository.saveWithSequelize(webtoonId, platformId, transaction);
+        await linkRepository.saveWithSequelize(path, webtoonId, platformId, transaction);
+
+        await transaction.commit();
+
+        data.getWebtoon().setId(webtoonId);
+
+        return new SuccessDTO("성공적으로 등록되었습니다.");
+    } catch (error) {
+        await transaction.rollback();
+        console.error('웹툰 등록 실패:', error);
+        throw error;
+    }
+}
+
+export { allWebtoons, registerWebtoon }
