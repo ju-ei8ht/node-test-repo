@@ -32,13 +32,18 @@ async function registerWebtoon(url: URL) {
     const transaction = await sequelize.transaction();
 
     try {
-        if(url.origin.includes('naver.me')) url = await getOriginLink(url.toString());
+        if (url.origin.includes('naver.me')) url = await getOriginLink(url.toString());
         const path = url.pathname + url.search;
 
+        // 이미 등록된 url인지 확인
         const existingUrl = await linkRepository.findLinkByUrlWithSequelize(path);
 
-        if(existingUrl) return new SuccessDTO("이미 등록 되었습니다.");
+        if (existingUrl) {
+            transaction.rollback();
+            return existingUrl.get().webtoonId;
+        }
 
+        // 아니면 메타데이터 가져오기
         const data = await getMetadata(url);
 
         // 이미 등록된 웹툰인지 확인
@@ -64,9 +69,7 @@ async function registerWebtoon(url: URL) {
 
         await transaction.commit();
 
-        data.getWebtoon().setId(webtoonId);
-
-        return new SuccessDTO("성공적으로 등록되었습니다.");
+        return webtoonId;
     } catch (error) {
         await transaction.rollback();
         console.error('웹툰 등록 실패:', error);

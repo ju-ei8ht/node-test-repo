@@ -50,10 +50,6 @@ class WebtoonDTO {
     getDesc() {
         return this.desc;
     }
-
-    setId(id: number) {
-        this.id = id;
-    }
 }
 
 class PlatformDTO {
