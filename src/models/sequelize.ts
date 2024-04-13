@@ -43,7 +43,8 @@ const linkModel = {
         },
         url: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            unique: true
         },
         webtoonId: {
             type: DataTypes.BIGINT,
@@ -74,11 +75,13 @@ const platformModel = {
         },
         name: {
             type: DataTypes.STRING(50),
-            allowNull: false
+            allowNull: false,
+            unique: true
         },
         url: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            unique: true
         }
     },
     options: {
@@ -120,6 +123,10 @@ const bookmarkModel = {
             primaryKey: true,
             autoIncrement: true
         },
+        webtoonId: {
+            type: DataTypes.BIGINT,
+            allowNull: false
+        },
         user: {
             type: DataTypes.STRING,
             allowNull: false
@@ -153,8 +160,14 @@ const linkS = sequelize.define(linkModel.tableName, linkModel.definition, linkMo
 
 webtoonS.hasMany(webtoonPlatformS);
 platformS.hasMany(webtoonPlatformS);
+webtoonS.hasMany(linkS);
+platformS.hasMany(linkS);
+webtoonS.hasMany(bookmarkS);
 
 webtoonPlatformS.belongsTo(webtoonS);
 webtoonPlatformS.belongsTo(platformS)
+linkS.belongsTo(webtoonS);
+linkS.belongsTo(platformS);
+bookmarkS.belongsTo(webtoonS);
 
 export { webtoonS, platformS, webtoonPlatformS, bookmarkS, linkS }

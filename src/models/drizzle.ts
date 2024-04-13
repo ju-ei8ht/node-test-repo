@@ -10,7 +10,7 @@ const webtoonD = mysqlTable('webtoon', {
 
 const linkD = mysqlTable('link', {
     id: serial('id').primaryKey(),
-    url: varchar('url', { length: 255 }).notNull(),
+    url: varchar('url', { length: 255 }).notNull().unique(),
     webtoonId: bigint('webtoon_id', {mode: 'number'}).references(() => webtoonD.id).notNull(),
     platformId: bigint('platform_id', {mode: 'number'}).references(() => platformD.id).notNull()
 });
@@ -18,8 +18,8 @@ const linkD = mysqlTable('link', {
 const platformD = mysqlTable('platform', {
     id: serial('id').primaryKey(),
     image: varchar('image', { length: 255 }),
-    name: varchar('name', { length: 50 }).notNull(),
-    url: varchar('url', { length: 255 }).notNull()
+    name: varchar('name', { length: 50 }).notNull().unique(),
+    url: varchar('url', { length: 255 }).notNull().unique()
 });
 
 const webtoonPlatformD = mysqlTable('webtoon_platform', {
