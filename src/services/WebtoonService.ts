@@ -4,7 +4,6 @@ import { WebtoonRepository } from '../repositories/WebtoonRepository';
 import { PlatformRepository } from '../repositories/PlatformRepository';
 import { LinkRepository } from '../repositories/LinkRepository';
 import { WebtoonPlatformRepository } from '../repositories/WebtoonPlatformRepository';
-import { SuccessDTO } from '../dtos/MsgDTO';
 
 const dbManager = DBManager.getInstance();
 const webtoonRepository = WebtoonRepository.getInstance();
@@ -38,10 +37,7 @@ async function registerWebtoon(url: URL) {
         // 이미 등록된 url인지 확인
         const existingUrl = await linkRepository.findLinkByUrlWithSequelize(path);
 
-        if (existingUrl) {
-            transaction.rollback();
-            return existingUrl.get().webtoonId;
-        }
+        if (existingUrl) return existingUrl.get().webtoonId;
 
         // 아니면 메타데이터 가져오기
         const data = await getMetadata(url);
