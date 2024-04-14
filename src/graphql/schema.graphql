@@ -1,0 +1,11 @@
+type Webtoon {
+    id: ID!
+    image: String!
+    title: String!
+    author: String!
+    desc: String!
+}
+
+type Query {
+    getAllWebtoons: [Webtoon!]!
+}
