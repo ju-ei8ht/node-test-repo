@@ -4,6 +4,7 @@ import { WebtoonRepository } from '../repositories/WebtoonRepository';
 import { PlatformRepository } from '../repositories/PlatformRepository';
 import { LinkRepository } from '../repositories/LinkRepository';
 import { WebtoonPlatformRepository } from '../repositories/WebtoonPlatformRepository';
+import { WebtoonDTO } from '../dtos/WebtoonDTO';
 
 const dbManager = DBManager.getInstance();
 const webtoonRepository = WebtoonRepository.getInstance();
@@ -16,7 +17,19 @@ const webtoonPlatformRepository = WebtoonPlatformRepository.getInstance();
  */
 async function allWebtoons() {
     try {
-        return await webtoonRepository.findAllWebtoonsWithSequelize();
+        const data = await webtoonRepository.findAllWebtoonsIncludeBookmarkWithSequelize();
+        return data.map(webtoon => {
+            return new WebtoonDTO(
+                webtoon.get().id,
+                webtoon.get().image,
+                webtoon.get().title,
+                webtoon.get().author,
+                webtoon.get().desc,
+                webtoon.get().bookmark != null ? true : false,
+                webtoon.get().bookmark.alarm,
+                webtoon.get().bookmark.latest
+            );
+        });
     } catch (error) {
         console.error('웹툰 조회 실패:', error);
         throw error;
