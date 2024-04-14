@@ -22,13 +22,19 @@ class WebtoonDTO {
     private title: string;
     private author: string;
     private desc: string;
+    private isBookmark: boolean;
+    private isAlarm: boolean;
+    private latest: number;
 
-    constructor(id: number, image: string, title: string, author: string, desc: string) {
+    constructor(id: number, image: string, title: string, author: string, desc: string, isBookmark?: boolean, isAlarm?: boolean, latest?: number) {
         this.id = id;
         this.image = image;
         this.title = title;
         this.author = author;
         this.desc = desc;
+        this.isBookmark = isBookmark == null ? false : isBookmark;
+        this.isAlarm = isAlarm == null ? false : isAlarm;
+        this.latest = latest == null ? -1 : latest;
     }
 
     getId() {
@@ -49,6 +55,18 @@ class WebtoonDTO {
 
     getDesc() {
         return this.desc;
+    }
+
+    getBookmark() {
+        return this.isBookmark;
+    }
+
+    getAlarm() {
+        return this.isAlarm;
+    }
+
+    getLatest() {
+        return this.latest;
     }
 }
 

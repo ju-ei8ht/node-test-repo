@@ -1,6 +1,6 @@
 import type { Transaction } from "sequelize";
 import type { RegisterDTO } from "../dtos/WebtoonDTO";
-import { webtoonS } from "../models/sequelize";
+import { bookmarkS, webtoonS } from "../models/sequelize";
 
 class WebtoonRepository {
 
@@ -13,8 +13,8 @@ class WebtoonRepository {
         return this.instance;
     }
 
-    public async findAllWebtoonsWithSequelize() {
-        return await webtoonS.findAll();
+    public async findAllWebtoonsIncludeBookmarkWithSequelize() {
+        return await webtoonS.findAll({ include: [bookmarkS] });
     }
 
     public async findWebtoonByTitleWithSequelize(title: string) {

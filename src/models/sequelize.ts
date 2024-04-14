@@ -160,9 +160,9 @@ const linkS = sequelize.define(linkModel.tableName, linkModel.definition, linkMo
 
 webtoonS.hasMany(webtoonPlatformS);
 platformS.hasMany(webtoonPlatformS);
-webtoonS.hasMany(linkS);
-platformS.hasMany(linkS);
-webtoonS.hasMany(bookmarkS);
+webtoonS.hasOne(linkS);
+platformS.hasOne(linkS);
+webtoonS.hasOne(bookmarkS);
 
 webtoonPlatformS.belongsTo(webtoonS);
 webtoonPlatformS.belongsTo(platformS)
