@@ -4,6 +4,9 @@ type Webtoon {
     title: String!
     author: String!
     desc: String!
+    isBookmark: Boolean!
+    isAlarm: Boolean!
+    latest: Int!
 }
 
 type Query {
