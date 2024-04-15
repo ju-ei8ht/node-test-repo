@@ -5,7 +5,7 @@ class WebtoonPlatformRepository {
 
     private static instance: WebtoonPlatformRepository;
 
-    constructor() { }
+    private constructor() { }
 
     public static getInstance(): WebtoonPlatformRepository {
         if (this.instance == null) this.instance = new WebtoonPlatformRepository();

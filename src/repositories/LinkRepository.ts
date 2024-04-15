@@ -5,7 +5,7 @@ class LinkRepository {
 
     private static instance: LinkRepository;
 
-    constructor() { }
+    private constructor() { }
 
     public static getInstance(): LinkRepository {
         if (this.instance == null) this.instance = new LinkRepository();

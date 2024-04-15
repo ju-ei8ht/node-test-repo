@@ -5,7 +5,7 @@ class BookmarkRepository {
 
     private static instance: BookmarkRepository;
 
-    constructor() { }
+    private constructor() { }
 
     public static getInstance(): BookmarkRepository {
         if (this.instance == null) this.instance = new BookmarkRepository();

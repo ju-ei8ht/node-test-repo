@@ -15,9 +15,9 @@ const webtoonPlatformRepository = WebtoonPlatformRepository.getInstance();
 /**
  * 모든 웹툰 조회
  */
-async function allWebtoons() {
+async function allWebtoons(user: string) {
     try {
-        const data = await webtoonRepository.findAllWebtoonsIncludeBookmarkWithSequelize();
+        const data = await webtoonRepository.findAllWebtoonsIncludeBookmarkWithSequelize(user);
         return data.map(webtoon => {
             return new WebtoonDTO(
                 webtoon.get().id,
@@ -25,9 +25,7 @@ async function allWebtoons() {
                 webtoon.get().title,
                 webtoon.get().author,
                 webtoon.get().desc,
-                webtoon.get().bookmark != null ? true : false,
-                webtoon.get().bookmark.alarm,
-                webtoon.get().bookmark.latest
+                webtoon.get().bookmark
             );
         });
     } catch (error) {

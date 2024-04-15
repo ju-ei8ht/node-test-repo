@@ -1,3 +1,5 @@
+import type { Model } from "sequelize";
+
 class RegisterDTO {
     private webtoon: WebtoonDTO;
     private platform: PlatformDTO;
@@ -26,15 +28,15 @@ class WebtoonDTO {
     private isAlarm: boolean;
     private latest: number;
 
-    constructor(id: number, image: string, title: string, author: string, desc: string, isBookmark?: boolean, isAlarm?: boolean, latest?: number) {
+    constructor(id: number, image: string, title: string, author: string, desc: string, bookmark?: Model<any, any>) {
         this.id = id;
         this.image = image;
         this.title = title;
         this.author = author;
         this.desc = desc;
-        this.isBookmark = isBookmark == null ? false : isBookmark;
-        this.isAlarm = isAlarm == null ? false : isAlarm;
-        this.latest = latest == null ? -1 : latest;
+        this.isBookmark = bookmark != null;
+        this.isAlarm = bookmark == null ? false : bookmark.get().alarm;
+        this.latest = bookmark == null ? -1 : bookmark.get().latest;
     }
 
     getId() {

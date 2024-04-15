@@ -6,15 +6,21 @@ class WebtoonRepository {
 
     private static instance: WebtoonRepository;
 
-    constructor() { }
+    private constructor() { }
 
     public static getInstance(): WebtoonRepository {
         if (this.instance == null) this.instance = new WebtoonRepository();
         return this.instance;
     }
 
-    public async findAllWebtoonsIncludeBookmarkWithSequelize() {
-        return await webtoonS.findAll({ include: [bookmarkS] });
+    public async findAllWebtoonsIncludeBookmarkWithSequelize(user: string) {
+        return await webtoonS.findAll({
+            include: [{
+                model: bookmarkS,
+                where: { user },
+                required: false
+            }]
+        });
     }
 
     public async findWebtoonByTitleWithSequelize(title: string) {

@@ -6,7 +6,7 @@ class PlatformRepository {
 
     private static instance: PlatformRepository;
 
-    constructor() {}
+    private constructor() { }
 
     public static getInstance(): PlatformRepository {
         if (this.instance == null) this.instance = new PlatformRepository();
@@ -17,7 +17,7 @@ class PlatformRepository {
         return await platformS.findOne({ where: { name } })
     }
 
-    public async saveWithSequelize(data: RegisterDTO, transaction: Transaction){
+    public async saveWithSequelize(data: RegisterDTO, transaction: Transaction) {
         return await platformS.create({
             image: data.getPlatform().getImage(),
             name: data.getPlatform().getName(),
