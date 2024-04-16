@@ -4,7 +4,7 @@ import { WebtoonRepository } from '../repositories/WebtoonRepository';
 import { PlatformRepository } from '../repositories/PlatformRepository';
 import { LinkRepository } from '../repositories/LinkRepository';
 import { WebtoonPlatformRepository } from '../repositories/WebtoonPlatformRepository';
-import { WebtoonDTO } from '../dtos/WebtoonDTO';
+import { WebtoonDTO, WebtoonsOutDTO } from '../dtos/WebtoonDTO';
 
 const dbManager = DBManager.getInstance();
 const webtoonRepository = WebtoonRepository.getInstance();
@@ -15,10 +15,11 @@ const webtoonPlatformRepository = WebtoonPlatformRepository.getInstance();
 /**
  * 모든 웹툰 조회
  */
-async function allWebtoons(user: string) {
+async function allWebtoons(user: string, pageNumber: number, pageSize: number) {
     try {
-        const data = await webtoonRepository.findAllWebtoonsIncludeBookmarkWithSequelize(user);
-        return data.map(webtoon => {
+        const result = await webtoonRepository.paginateAllWebtoonsIncludeBookmarkWithSequelize(user, pageNumber, pageSize);
+        const { data, totalPages } = result;
+        const webtoons = data.map((webtoon: any) => {
             return new WebtoonDTO(
                 webtoon.get().id,
                 webtoon.get().image,
@@ -28,6 +29,7 @@ async function allWebtoons(user: string) {
                 webtoon.get().bookmark
             );
         });
+        return new WebtoonsOutDTO(totalPages, webtoons);
     } catch (error) {
         console.error('웹툰 조회 실패:', error);
         throw error;

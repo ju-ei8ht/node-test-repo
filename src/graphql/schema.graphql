@@ -1,3 +1,8 @@
+type Webtoons {
+    totalPages: Int!
+    webtoons: [Webtoon!]!
+}
+
 type Webtoon {
     id: ID!
     image: String!
@@ -10,5 +15,5 @@ type Webtoon {
 }
 
 type Query {
-    getAllWebtoons: [Webtoon!]!
+    getAllWebtoons(user: String!, pageNumber: Int!, pageSize: Int!): Webtoons!
 }

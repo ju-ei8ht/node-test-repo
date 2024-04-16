@@ -6,7 +6,8 @@ import { addBookmark } from '../services/BookmarkService';
  * 모든 웹툰 보기
  */
 async function getAllWebtoons(req: Request, res: Response) {
-    const result = await allWebtoons('');
+    const { page, size } = req.query;
+    const result = await allWebtoons('', Number(page), Number(size));
     return res.status(200).json(result);
 };
 
