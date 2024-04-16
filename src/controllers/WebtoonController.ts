@@ -1,15 +1,25 @@
 import { type Request, type Response } from 'express';
-import { allWebtoons, registerWebtoon } from '../services/WebtoonService';
+import { getWebtoons, registerWebtoon } from '../services/WebtoonService';
 import { addBookmark } from '../services/BookmarkService';
+import { Select } from '../repositories/WebtoonRepository';
 
 /**
  * 모든 웹툰 보기
  */
 async function getAllWebtoons(req: Request, res: Response) {
     const { user, page, size } = req.query;
-    const result = await allWebtoons(user as string, Number(page), Number(size));
+    const result = await getWebtoons(Select.ALL, user as string, Number(page), Number(size));
     return res.status(200).json(result);
 };
+
+/**
+ * 북마크한 웹툰 보기
+ */
+async function getBookmarkWebtoons(req: Request, res: Response) {
+    const { user, page, size } = req.query;
+    const result = await getWebtoons(Select.BOOKMARK, user as string, Number(page), Number(size));
+    return res.status(200).json(result);
+}
 
 /**
  * 웹툰 및 북마크 등록
@@ -24,4 +34,4 @@ async function postWebtoonAndBookmark(req: Request, res: Response) {
     return res.status(200).json(result);
 };
 
-export { getAllWebtoons, postWebtoonAndBookmark }
+export { getAllWebtoons, getBookmarkWebtoons, postWebtoonAndBookmark }

@@ -1,12 +1,13 @@
 import type { Transaction } from "sequelize";
 import type { RegisterDTO } from "../dtos/WebtoonDTO";
 import { bookmarkS, webtoonS } from "../models/sequelize";
-import { deleteKeyWithPattern, getCachedQuery, putCachedQuery } from "../utils/CacheUtil";
+import { cacheClear, getCachedQuery, putCachedQuery } from "../utils/CacheUtil";
 
 class WebtoonRepository {
 
     private static instance: WebtoonRepository;
     public static readonly ALL_PREFIX = 'WEBTOONS_';
+    public static readonly BOOKMARK_PREFIX = 'BOOKMARKS_';
 
     private constructor() { }
 
@@ -15,8 +16,12 @@ class WebtoonRepository {
         return this.instance;
     }
 
-    public async paginateAllWebtoonsIncludeBookmarkWithSequelize(user: string, pageNumber: number, pageSize: number) {
-        const cacheKey = WebtoonRepository.ALL_PREFIX + user + '_' + pageNumber;
+    public async paginateWebtoonsIncludeBookmarkWithSequelize(select: Select, user: string, pageNumber: number, pageSize: number) {
+        let prefix = WebtoonRepository.ALL_PREFIX;
+        if (select == Select.BOOKMARK) prefix = WebtoonRepository.BOOKMARK_PREFIX;
+        const cacheKey = prefix + user + '_' + pageNumber;
+        
+        const required = select == Select.BOOKMARK;
 
         // 캐시 확인
         const cachedResult = getCachedQuery(cacheKey);
@@ -28,7 +33,7 @@ class WebtoonRepository {
             include: [{
                 model: bookmarkS,
                 where: { user },
-                required: false
+                required: required
             }],
             limit: pageSize,
             offset: offset
@@ -55,8 +60,6 @@ class WebtoonRepository {
     }
 
     public async saveWithSequelize(data: RegisterDTO, transaction: Transaction) {
-        console.log("WEBTOON CACHE DELETE");
-
         const result = await webtoonS.create({
             image: data.getWebtoon().getImage(),
             title: data.getWebtoon().getTitle(),
@@ -64,10 +67,15 @@ class WebtoonRepository {
             desc: data.getWebtoon().getDesc()
         }, { transaction });
 
-        deleteKeyWithPattern(WebtoonRepository.ALL_PREFIX);
+        cacheClear();
 
         return result;
     }
+}
+
+export enum Select {
+    ALL,
+    BOOKMARK
 }
 
 export { WebtoonRepository }

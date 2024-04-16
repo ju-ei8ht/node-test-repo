@@ -1,11 +1,11 @@
 import { WebtoonDTO, WebtoonsOutDTO } from "../dtos/WebtoonDTO";
-import { WebtoonRepository } from "../repositories/WebtoonRepository"
+import { Select, WebtoonRepository } from "../repositories/WebtoonRepository"
 
 const webtoonRepository = WebtoonRepository.getInstance();
 const resolvers = {
     Query: {
-        getAllWebtoons: async (_: any, { user, pageNumber, pageSize }: { user: string; pageNumber: number; pageSize: number }) => {
-            const result = await webtoonRepository.paginateAllWebtoonsIncludeBookmarkWithSequelize(user, pageNumber, pageSize);
+        getAllWebtoons: async (_: any, { user, page, size }: { user: string; page: number; size: number }) => {
+            const result = await webtoonRepository.paginateWebtoonsIncludeBookmarkWithSequelize(Select.ALL, user, page, size);
             const { data, totalPages } = result;
             const webtoons = data.map((webtoon: any) => {
                 return new WebtoonDTO(
@@ -18,7 +18,22 @@ const resolvers = {
                 );
             });
             return new WebtoonsOutDTO(totalPages, webtoons);
-        }
+        },
+        getBookmarkWebtoons: async (_: any, { user, page, size }: { user: string; page: number; size: number }) => {
+            const result = await webtoonRepository.paginateWebtoonsIncludeBookmarkWithSequelize(Select.BOOKMARK, user, page, size);
+            const { data, totalPages } = result;
+            const webtoons = data.map((webtoon: any) => {
+                return new WebtoonDTO(
+                    webtoon.get().id,
+                    webtoon.get().image,
+                    webtoon.get().title,
+                    webtoon.get().author,
+                    webtoon.get().desc,
+                    webtoon.get().bookmark
+                );
+            });
+            return new WebtoonsOutDTO(totalPages, webtoons);
+        },
     }
 };
 

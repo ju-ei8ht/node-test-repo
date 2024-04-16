@@ -1,6 +1,6 @@
 import { DBManager } from '../configs/db';
 import { getMetadata, getOriginLink } from '../utils/MetadataUtil';
-import { WebtoonRepository } from '../repositories/WebtoonRepository';
+import { Select, WebtoonRepository } from '../repositories/WebtoonRepository';
 import { PlatformRepository } from '../repositories/PlatformRepository';
 import { LinkRepository } from '../repositories/LinkRepository';
 import { WebtoonPlatformRepository } from '../repositories/WebtoonPlatformRepository';
@@ -13,11 +13,14 @@ const linkRepository = LinkRepository.getInstance();
 const webtoonPlatformRepository = WebtoonPlatformRepository.getInstance();
 
 /**
- * 모든 웹툰 조회
+ * 웹툰 조회 (전체 / 북마크)
  */
-async function allWebtoons(user: string, pageNumber: number, pageSize: number) {
+async function getWebtoons(select: Select, user: string, pageNumber: number, pageSize: number) {
     try {
-        const result = await webtoonRepository.paginateAllWebtoonsIncludeBookmarkWithSequelize(user, pageNumber, pageSize);
+        let result;
+        if (select == Select.ALL) result = await webtoonRepository.paginateWebtoonsIncludeBookmarkWithSequelize(Select.ALL, user, pageNumber, pageSize);
+        else if (select == Select.BOOKMARK) result = await webtoonRepository.paginateWebtoonsIncludeBookmarkWithSequelize(Select.BOOKMARK, user, pageNumber, pageSize);
+        
         const { data, totalPages } = result;
         const webtoons = data.map((webtoon: any) => {
             return new WebtoonDTO(
@@ -86,4 +89,4 @@ async function registerWebtoon(url: URL) {
     }
 }
 
-export { allWebtoons, registerWebtoon }
+export { getWebtoons, registerWebtoon }

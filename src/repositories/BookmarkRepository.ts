@@ -1,6 +1,6 @@
 import type { Transaction } from "sequelize";
 import { bookmarkS } from "../models/sequelize";
-import { deleteKeyWithPattern } from "../utils/CacheUtil";
+import { deleteKeysWithPattern } from "../utils/CacheUtil";
 import { WebtoonRepository } from "./WebtoonRepository";
 
 class BookmarkRepository {
@@ -28,7 +28,8 @@ class BookmarkRepository {
             user: user
         }, { transaction });
 
-        deleteKeyWithPattern(WebtoonRepository.ALL_PREFIX + user + '_');
+        const keys: string[] = [WebtoonRepository.ALL_PREFIX + user + '_', WebtoonRepository.BOOKMARK_PREFIX + user + '_']
+        deleteKeysWithPattern(keys);
 
         return result;
     }

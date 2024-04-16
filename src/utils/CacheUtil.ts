@@ -8,13 +8,21 @@ function putCachedQuery(key: string, value: any) {
     cache.put(key, value);
 }
 
-function deleteKeyWithPattern(pattern: string) {
+function deleteKeysWithPattern(patterns: string[]) {
     const allKeys = cache.keys();
 
     if (allKeys) {
-        const keysToDelete = allKeys.filter(key => key.startsWith(pattern));
+        const keysToDelete: string[] = [];
+        allKeys.forEach(key => {
+            if (patterns.some(pattern => key.startsWith(pattern))) keysToDelete.push(key);
+        });
+
         keysToDelete.forEach(key => cache.del(key));
     }
 }
 
-export { getCachedQuery, putCachedQuery, deleteKeyWithPattern }
+function cacheClear() {
+    cache.clear();
+}
+
+export { getCachedQuery, putCachedQuery, deleteKeysWithPattern, cacheClear }

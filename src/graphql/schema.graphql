@@ -15,5 +15,6 @@ type Webtoon {
 }
 
 type Query {
-    getAllWebtoons(user: String!, pageNumber: Int!, pageSize: Int!): Webtoons!
+    getAllWebtoons(user: String!, page: Int!, size: Int!): Webtoons!
+    getBookmarkWebtoons(user: String!, page: Int!, size: Int!): Webtoons!
 }
