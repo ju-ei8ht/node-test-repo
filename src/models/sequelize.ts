@@ -20,7 +20,7 @@ const webtoonModel = {
             type: DataTypes.STRING
         },
         desc: {
-            type: DataTypes.TEXT('tiny')
+            type: DataTypes.TEXT
         }
     },
     options: {

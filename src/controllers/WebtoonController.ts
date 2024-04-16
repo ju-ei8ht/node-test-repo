@@ -6,8 +6,8 @@ import { addBookmark } from '../services/BookmarkService';
  * 모든 웹툰 보기
  */
 async function getAllWebtoons(req: Request, res: Response) {
-    const { page, size } = req.query;
-    const result = await allWebtoons('', Number(page), Number(size));
+    const { user, page, size } = req.query;
+    const result = await allWebtoons(user as string, Number(page), Number(size));
     return res.status(200).json(result);
 };
 
@@ -15,12 +15,12 @@ async function getAllWebtoons(req: Request, res: Response) {
  * 웹툰 및 북마크 등록
  */
 async function postWebtoonAndBookmark(req: Request, res: Response) {
-    const { url } = req.query;
+    const { url, user } = req.query;
     const parseUrl = new URL(url as string);
     const webtoonId = await registerWebtoon(parseUrl);
 
-    const user = 'test@email.com'; // 임시 user
-    const result = await addBookmark(webtoonId, user)
+    // const user = 'test@email.com'; // 임시 user
+    const result = await addBookmark(webtoonId, user as string)
     return res.status(200).json(result);
 };
 

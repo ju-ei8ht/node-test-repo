@@ -5,6 +5,6 @@ import { getAllWebtoons, postWebtoonAndBookmark } from "../controllers/WebtoonCo
 const router = Router();
 
 router.get("/api/webtoons", frontController(getAllWebtoons));
-router.get("/api/webtoon", frontController(postWebtoonAndBookmark));
+router.post("/api/webtoon", frontController(postWebtoonAndBookmark));
 
 export default router;

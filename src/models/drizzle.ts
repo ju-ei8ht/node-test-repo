@@ -1,11 +1,11 @@
-import { bigint, boolean, int, mysqlTable, serial, tinytext, varchar } from "drizzle-orm/mysql-core";
+import { bigint, boolean, int, mysqlTable, serial, text, varchar } from "drizzle-orm/mysql-core";
 
 const webtoonD = mysqlTable('webtoon', {
     id: serial('id').primaryKey(),
     image: varchar('image', { length: 255 }),
     title: varchar('title', { length: 255 }).notNull(),
     author: varchar('author', { length: 255 }),
-    desc: tinytext('desc')
+    desc: text('desc')
 });
 
 const linkD = mysqlTable('link', {

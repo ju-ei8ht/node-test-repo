@@ -1,5 +1,7 @@
 import type { Transaction } from "sequelize";
 import { bookmarkS } from "../models/sequelize";
+import { deleteKeyWithPattern } from "../utils/CacheUtil";
+import { WebtoonRepository } from "./WebtoonRepository";
 
 class BookmarkRepository {
 
@@ -21,10 +23,14 @@ class BookmarkRepository {
     }
 
     public async saveWithSequelize(webtoonId: number, user: string, transaction: Transaction) {
-        return await bookmarkS.create({
+        const result = await bookmarkS.create({
             webtoonId: webtoonId,
             user: user
         }, { transaction });
+
+        deleteKeyWithPattern(WebtoonRepository.ALL_PREFIX + user + '_');
+
+        return result;
     }
 }
 

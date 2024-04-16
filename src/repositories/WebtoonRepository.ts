@@ -1,12 +1,12 @@
 import type { Transaction } from "sequelize";
 import type { RegisterDTO } from "../dtos/WebtoonDTO";
 import { bookmarkS, webtoonS } from "../models/sequelize";
-import cache from 'memory-cache';
+import { deleteKeyWithPattern, getCachedQuery, putCachedQuery } from "../utils/CacheUtil";
 
 class WebtoonRepository {
 
     private static instance: WebtoonRepository;
-    private static readonly ALL_PREFIX = 'ALLWEBTOONS_';
+    public static readonly ALL_PREFIX = 'WEBTOONS_';
 
     private constructor() { }
 
@@ -16,10 +16,10 @@ class WebtoonRepository {
     }
 
     public async paginateAllWebtoonsIncludeBookmarkWithSequelize(user: string, pageNumber: number, pageSize: number) {
-        const cacheKey = WebtoonRepository.ALL_PREFIX + '_' + user + '_' + pageNumber;
+        const cacheKey = WebtoonRepository.ALL_PREFIX + user + '_' + pageNumber;
 
         // 캐시 확인
-        const cachedResult = cache.get(cacheKey);
+        const cachedResult = getCachedQuery(cacheKey);
         if (cachedResult) return cachedResult;
 
         // 캐시 없는 경우
@@ -45,7 +45,7 @@ class WebtoonRepository {
         }
 
         // 결과를 캐시에 저장
-        cache.put(cacheKey, response);
+        putCachedQuery(cacheKey, response);
 
         return response;
     }
@@ -55,12 +55,18 @@ class WebtoonRepository {
     }
 
     public async saveWithSequelize(data: RegisterDTO, transaction: Transaction) {
-        return await webtoonS.create({
+        console.log("WEBTOON CACHE DELETE");
+
+        const result = await webtoonS.create({
             image: data.getWebtoon().getImage(),
             title: data.getWebtoon().getTitle(),
             author: data.getWebtoon().getAuthor(),
             desc: data.getWebtoon().getDesc()
         }, { transaction });
+
+        deleteKeyWithPattern(WebtoonRepository.ALL_PREFIX);
+
+        return result;
     }
 }
 
