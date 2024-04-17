@@ -37,7 +37,7 @@
       "WebtoonPlatformRepository": ["repositories/WebtoonPlatformRepository"],
       "WebtoonDTO": ["dtos/WebtoonDTO"],
       "ResponseDTO": ["dtos/ResponseDTO"],
-      "CacheUtil": ["utils/CacheUtil"],
+      "CacheUtils": ["utils/CacheUtils"],
       "ErrorUtils": ["utils/ErrorUtils"],
       "ValidationUtils": ["utils/ValidationUtils"],
       "MetadataUtil": ["utils/MetadataUtil"],

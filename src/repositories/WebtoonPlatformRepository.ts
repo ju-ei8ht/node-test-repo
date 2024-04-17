@@ -1,6 +1,6 @@
 import type { Transaction } from "sequelize";
 import { webtoonPlatformS } from "models/sequelize";
-import { deleteKeysWithPattern } from "CacheUtil";
+import { createCacheKey, deleteKeysWithPattern } from "CacheUtils";
 import { WebtoonRepository } from "WebtoonRepository";
 
 class WebtoonPlatformRepository {
@@ -24,7 +24,7 @@ class WebtoonPlatformRepository {
             platformId: platformId
         }, { transaction });
 
-        deleteKeysWithPattern([WebtoonRepository.DETAILS_PREFIX + 'id-' + webtoonId + '_']);
+        deleteKeysWithPattern([createCacheKey(WebtoonRepository.DETAILS_PREFIX,undefined,undefined,webtoonId)]);
 
         return result;
     }

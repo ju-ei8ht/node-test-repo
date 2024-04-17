@@ -1,6 +1,6 @@
 import type { Transaction } from "sequelize";
 import { bookmarkS, webtoonS } from "models/sequelize";
-import { deleteKeysWithPattern, getCachedQuery, putCachedQuery } from "CacheUtil";
+import { createCacheKey, deleteKeysWithPattern, getCachedQuery, putCachedQuery } from "CacheUtils";
 import { WebtoonRepository } from "WebtoonRepository";
 import { calculateTotalPages, setOffset } from "PaginationUtils";
 
@@ -17,7 +17,7 @@ class BookmarkRepository {
     }
 
     public async paginateBookmarksIncludeWebtoonWithSequelize(user: string, page: number, size: number) {
-        const cacheKey = BookmarkRepository.BOOKMARK_PREFIX + user + '_page-' + page;
+        const cacheKey = createCacheKey(BookmarkRepository.BOOKMARK_PREFIX, user, page);
 
         // 캐시 확인
         const cachedResult = getCachedQuery(cacheKey);
@@ -57,7 +57,11 @@ class BookmarkRepository {
             user: user
         }, { transaction });
 
-        const keys: string[] = [WebtoonRepository.ALL_PREFIX + user + '_page-', BookmarkRepository.BOOKMARK_PREFIX + user + '_page-', WebtoonRepository.DETAILS_PREFIX + 'id-' + webtoonId + '_' + user]
+        const keys: string[] = [
+            createCacheKey(WebtoonRepository.ALL_PREFIX, user),
+            createCacheKey(BookmarkRepository.BOOKMARK_PREFIX, user),
+            createCacheKey(WebtoonRepository.DETAILS_PREFIX, user, undefined, webtoonId)
+        ]
         deleteKeysWithPattern(keys);
 
         return result;
