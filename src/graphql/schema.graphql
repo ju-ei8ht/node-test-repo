@@ -3,6 +3,17 @@ type Webtoons {
     webtoons: [Webtoon!]!
 }
 
+type Details {
+    webtoon: Webtoon!
+    platforms: [Platform!]!
+}
+
+type Platform {
+    image: String!
+    name: String!
+    url: String!
+}
+
 type Webtoon {
     id: ID!
     image: String!
@@ -17,4 +28,5 @@ type Webtoon {
 type Query {
     getAllWebtoons(user: String!, page: Int!, size: Int!): Webtoons!
     getBookmarkWebtoons(user: String!, page: Int!, size: Int!): Webtoons!
+    getWebtoon(user: String!, id: Int!): Details!
 }

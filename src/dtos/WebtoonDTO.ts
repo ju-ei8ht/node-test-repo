@@ -1,5 +1,23 @@
 import type { Model } from "sequelize";
 
+class WebtoonDetailsDTO{
+    private webtoon: WebtoonDTO;
+    private platforms: PlatformDTO[];
+
+    constructor(webtoon: WebtoonDTO, platforms: PlatformDTO[]) {
+        this.webtoon = webtoon;
+        this.platforms = platforms;
+    }
+
+    getWebtoon() {
+        return this.webtoon;
+    }
+
+    getPlatforms() {
+        return this.platforms;
+    }
+}
+
 class WebtoonsOutDTO{
     private totalPages: number;
     private webtoons: WebtoonDTO;
@@ -138,4 +156,4 @@ class MetadataDTO {
     }
 }
 
-export { WebtoonsOutDTO, RegisterDTO, WebtoonDTO, PlatformDTO, MetadataDTO }
+export { WebtoonDetailsDTO, WebtoonsOutDTO, RegisterDTO, WebtoonDTO, PlatformDTO, MetadataDTO }

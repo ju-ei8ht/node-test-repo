@@ -1,38 +1,16 @@
-import { WebtoonDTO, WebtoonsOutDTO } from "WebtoonDTO";
-import { Select, WebtoonRepository } from "WebtoonRepository"
+import { Select } from "WebtoonRepository"
+import { getWebtoonDetails, getWebtoons } from "WebtoonService";
 
-const webtoonRepository = WebtoonRepository.getInstance();
 const resolvers = {
     Query: {
         getAllWebtoons: async (_: any, { user, page, size }: { user: string; page: number; size: number }) => {
-            const result = await webtoonRepository.paginateWebtoonsIncludeBookmarkWithSequelize(Select.ALL, user, page, size);
-            const { data, totalPages } = result;
-            const webtoons = data.map((webtoon: any) => {
-                return new WebtoonDTO(
-                    webtoon.get().id,
-                    webtoon.get().image,
-                    webtoon.get().title,
-                    webtoon.get().author,
-                    webtoon.get().desc,
-                    webtoon.get().bookmark
-                );
-            });
-            return new WebtoonsOutDTO(totalPages, webtoons);
+            return await getWebtoons(Select.ALL, user, page, size);
         },
         getBookmarkWebtoons: async (_: any, { user, page, size }: { user: string; page: number; size: number }) => {
-            const result = await webtoonRepository.paginateWebtoonsIncludeBookmarkWithSequelize(Select.BOOKMARK, user, page, size);
-            const { data, totalPages } = result;
-            const webtoons = data.map((webtoon: any) => {
-                return new WebtoonDTO(
-                    webtoon.get().id,
-                    webtoon.get().image,
-                    webtoon.get().title,
-                    webtoon.get().author,
-                    webtoon.get().desc,
-                    webtoon.get().bookmark
-                );
-            });
-            return new WebtoonsOutDTO(totalPages, webtoons);
+            return await getWebtoons(Select.BOOKMARK, user, page, size);
+        },
+        getWebtoon: async (_: any, { user, id }: { user: string, id: number }) => {
+            return await getWebtoonDetails(id, user);
         }
     }
 };

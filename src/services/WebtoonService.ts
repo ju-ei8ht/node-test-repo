@@ -4,7 +4,7 @@ import { Select, WebtoonRepository } from 'WebtoonRepository';
 import { PlatformRepository } from 'PlatformRepository';
 import { LinkRepository } from 'LinkRepository';
 import { WebtoonPlatformRepository } from 'WebtoonPlatformRepository';
-import { WebtoonDTO, WebtoonsOutDTO } from 'WebtoonDTO';
+import { PlatformDTO, WebtoonDTO, WebtoonDetailsDTO, WebtoonsOutDTO } from 'WebtoonDTO';
 
 const dbManager = DBManager.getInstance();
 const webtoonRepository = WebtoonRepository.getInstance();
@@ -15,12 +15,12 @@ const webtoonPlatformRepository = WebtoonPlatformRepository.getInstance();
 /**
  * 웹툰 조회 (전체 / 북마크)
  */
-async function getWebtoons(select: Select, user: string, pageNumber: number, pageSize: number) {
+async function getWebtoons(select: Select, user: string, page: number, size: number) {
     try {
         let result;
-        if (select == Select.ALL) result = await webtoonRepository.paginateWebtoonsIncludeBookmarkWithSequelize(Select.ALL, user, pageNumber, pageSize);
-        else if (select == Select.BOOKMARK) result = await webtoonRepository.paginateWebtoonsIncludeBookmarkWithSequelize(Select.BOOKMARK, user, pageNumber, pageSize);
-        
+        if (select == Select.ALL) result = await webtoonRepository.paginateWebtoonsIncludeBookmarkWithSequelize(Select.ALL, user, page, size);
+        else if (select == Select.BOOKMARK) result = await webtoonRepository.paginateWebtoonsIncludeBookmarkWithSequelize(Select.BOOKMARK, user, page, size);
+
         const { data, totalPages } = result;
         const webtoons = data.map((webtoon: any) => {
             return new WebtoonDTO(
@@ -35,6 +35,39 @@ async function getWebtoons(select: Select, user: string, pageNumber: number, pag
         return new WebtoonsOutDTO(totalPages, webtoons);
     } catch (error) {
         console.error('웹툰 조회 실패:', error);
+        throw error;
+    }
+}
+
+/**
+ * 웹툰 상세 조회
+ */
+async function getWebtoonDetails(id: number, user: string) {
+    try {
+        const data = await webtoonRepository.findWebtoonIncludePlatformByIdWithSequelize(id, user);
+
+        const { webtoon_platforms } = data;
+
+        const webtoon = new WebtoonDTO(
+            data.get().id,
+            data.get().image,
+            data.get().title,
+            data.get().author,
+            data.get().desc,
+            data.get().bookmark
+        );
+        const platforms = webtoon_platforms.map((wp: any) => {
+            const { platform } = wp;
+            return new PlatformDTO(
+                platform.image,
+                platform.name,
+                platform.url
+            );
+        });
+
+        return new WebtoonDetailsDTO(webtoon, platforms);
+    } catch (error) {
+        console.error('웹툰 상세 조회 실패:', error);
         throw error;
     }
 }
@@ -89,4 +122,4 @@ async function registerWebtoon(url: URL) {
     }
 }
 
-export { getWebtoons, registerWebtoon }
+export { getWebtoons, getWebtoonDetails, registerWebtoon }
