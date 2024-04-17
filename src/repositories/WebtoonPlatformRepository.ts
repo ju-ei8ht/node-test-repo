@@ -1,5 +1,5 @@
 import type { Transaction } from "sequelize";
-import { webtoonPlatformS } from "../models/sequelize";
+import { webtoonPlatformS } from "models/sequelize";
 
 class WebtoonPlatformRepository {
 

@@ -1,5 +1,5 @@
 import type { Transaction } from "sequelize";
-import { linkS } from "../models/sequelize";
+import { linkS } from "models/sequelize";
 
 class LinkRepository {
 

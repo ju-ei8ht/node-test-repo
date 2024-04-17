@@ -1,5 +1,5 @@
-import { WebtoonDTO, WebtoonsOutDTO } from "../dtos/WebtoonDTO";
-import { Select, WebtoonRepository } from "../repositories/WebtoonRepository"
+import { WebtoonDTO, WebtoonsOutDTO } from "WebtoonDTO";
+import { Select, WebtoonRepository } from "WebtoonRepository"
 
 const webtoonRepository = WebtoonRepository.getInstance();
 const resolvers = {
@@ -33,7 +33,7 @@ const resolvers = {
                 );
             });
             return new WebtoonsOutDTO(totalPages, webtoons);
-        },
+        }
     }
 };
 

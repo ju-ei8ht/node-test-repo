@@ -1,8 +1,8 @@
-import { DBManager } from "../configs/db"
-import { CreatedDTO } from "../dtos/ResponseDTO";
-import { BookmarkRepository } from "../repositories/BookmarkRepository";
-import { AlreadyExistsError, BadRequestError } from "../utils/ErrorUtils";
-import { isValidEmail } from "../utils/ValidationUtils";
+import { DBManager } from "configs/db"
+import { CreatedDTO } from "ResponseDTO";
+import { BookmarkRepository } from "BookmarkRepository";
+import { AlreadyExistsError, BadRequestError } from "ErrorUtils";
+import { isValidEmail } from "ValidationUtils";
 
 const dbManager = DBManager.getInstance();
 const bookmarkRepository = BookmarkRepository.getInstance();

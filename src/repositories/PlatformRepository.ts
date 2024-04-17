@@ -1,6 +1,6 @@
 import type { Transaction } from "sequelize";
-import type { RegisterDTO } from "../dtos/WebtoonDTO";
-import { platformS } from "../models/sequelize";
+import type { RegisterDTO } from "WebtoonDTO";
+import { platformS } from "models/sequelize";
 
 class PlatformRepository {
 

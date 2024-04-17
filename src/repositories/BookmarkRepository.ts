@@ -1,7 +1,7 @@
 import type { Transaction } from "sequelize";
-import { bookmarkS } from "../models/sequelize";
-import { deleteKeysWithPattern } from "../utils/CacheUtil";
-import { WebtoonRepository } from "./WebtoonRepository";
+import { bookmarkS } from "models/sequelize";
+import { deleteKeysWithPattern } from "CacheUtil";
+import { WebtoonRepository } from "WebtoonRepository";
 
 class BookmarkRepository {
 

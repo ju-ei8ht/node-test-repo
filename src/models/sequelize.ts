@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import { DBManager } from '../configs/db';
+import { DBManager } from 'configs/db';
 
 const webtoonModel = {
     tableName: 'webtoon',

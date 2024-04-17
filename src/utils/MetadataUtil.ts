@@ -1,6 +1,6 @@
 import * as cheerio from 'cheerio';
 import axios, { AxiosError, type AxiosResponse } from 'axios';
-import { MetadataDTO, PlatformDTO, RegisterDTO, WebtoonDTO } from '../dtos/WebtoonDTO';
+import { MetadataDTO, PlatformDTO, RegisterDTO, WebtoonDTO } from 'WebtoonDTO';
 import dotenv from 'dotenv';
 dotenv.config();
 

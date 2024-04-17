@@ -1,7 +1,7 @@
 import type { Transaction } from "sequelize";
-import type { RegisterDTO } from "../dtos/WebtoonDTO";
-import { bookmarkS, webtoonS } from "../models/sequelize";
-import { cacheClear, getCachedQuery, putCachedQuery } from "../utils/CacheUtil";
+import type { RegisterDTO } from "WebtoonDTO";
+import { bookmarkS, webtoonS } from "models/sequelize";
+import { cacheClear, getCachedQuery, putCachedQuery } from "CacheUtil";
 
 class WebtoonRepository {
 

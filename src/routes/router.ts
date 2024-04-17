@@ -1,6 +1,6 @@
 import { Router } from "express";
-import frontController from "../controllers/FrontController";
-import { getAllWebtoons, getBookmarkWebtoons, postWebtoonAndBookmark } from "../controllers/WebtoonController";
+import frontController from "FrontController";
+import { getAllWebtoons, getBookmarkWebtoons, postWebtoonAndBookmark } from "WebtoonController";
 
 const router = Router();
 

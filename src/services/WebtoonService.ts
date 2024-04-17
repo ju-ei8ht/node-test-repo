@@ -1,10 +1,10 @@
-import { DBManager } from '../configs/db';
-import { getMetadata, getOriginLink } from '../utils/MetadataUtil';
-import { Select, WebtoonRepository } from '../repositories/WebtoonRepository';
-import { PlatformRepository } from '../repositories/PlatformRepository';
-import { LinkRepository } from '../repositories/LinkRepository';
-import { WebtoonPlatformRepository } from '../repositories/WebtoonPlatformRepository';
-import { WebtoonDTO, WebtoonsOutDTO } from '../dtos/WebtoonDTO';
+import { DBManager } from 'configs/db';
+import { getMetadata, getOriginLink } from 'MetadataUtil';
+import { Select, WebtoonRepository } from 'WebtoonRepository';
+import { PlatformRepository } from 'PlatformRepository';
+import { LinkRepository } from 'LinkRepository';
+import { WebtoonPlatformRepository } from 'WebtoonPlatformRepository';
+import { WebtoonDTO, WebtoonsOutDTO } from 'WebtoonDTO';
 
 const dbManager = DBManager.getInstance();
 const webtoonRepository = WebtoonRepository.getInstance();
