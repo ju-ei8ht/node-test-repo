@@ -40,7 +40,8 @@
       "CacheUtil": ["utils/CacheUtil"],
       "ErrorUtils": ["utils/ErrorUtils"],
       "ValidationUtils": ["utils/ValidationUtils"],
-      "MetadataUtil": ["utils/MetadataUtil"]
+      "MetadataUtil": ["utils/MetadataUtil"],
+      "PaginationUtils": ["utils/PaginationUtils"]
     }
   }
 }

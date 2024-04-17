@@ -1,5 +1,7 @@
 import type { Transaction } from "sequelize";
 import { webtoonPlatformS } from "models/sequelize";
+import { deleteKeysWithPattern } from "CacheUtil";
+import { WebtoonRepository } from "WebtoonRepository";
 
 class WebtoonPlatformRepository {
 
@@ -17,10 +19,14 @@ class WebtoonPlatformRepository {
     }
 
     public async saveWithSequelize(webtoonId: number, platformId: number, transaction: Transaction) {
-        return await webtoonPlatformS.create({
+        const result = await webtoonPlatformS.create({
             webtoonId: webtoonId,
             platformId: platformId
         }, { transaction });
+
+        deleteKeysWithPattern([WebtoonRepository.DETAILS_PREFIX + 'id-' + webtoonId + '_']);
+
+        return result;
     }
 }
 

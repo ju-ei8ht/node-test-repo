@@ -1,13 +1,13 @@
 import type { Transaction } from "sequelize";
 import type { RegisterDTO } from "WebtoonDTO";
-import { bookmarkS, platformS, webtoonPlatformS, webtoonS } from "models/sequelize";
-import { cacheClear, getCachedQuery, putCachedQuery } from "CacheUtil";
+import { bookmarkS, linkS, platformS, webtoonPlatformS, webtoonS } from "models/sequelize";
+import { deleteKeysWithPattern, getCachedQuery, putCachedQuery } from "CacheUtil";
+import { calculateTotalPages, setOffset } from "PaginationUtils";
 
 class WebtoonRepository {
 
     private static instance: WebtoonRepository;
     public static readonly ALL_PREFIX = 'WEBTOONS_';
-    public static readonly BOOKMARK_PREFIX = 'BOOKMARKS_';
     public static readonly DETAILS_PREFIX = 'DETAILS_';
 
     private constructor() { }
@@ -17,38 +17,29 @@ class WebtoonRepository {
         return this.instance;
     }
 
-    public async paginateWebtoonsIncludeBookmarkWithSequelize(select: Select, user: string, page: number, size: number) {
-        let prefix = WebtoonRepository.ALL_PREFIX;
-        if (select == Select.BOOKMARK) prefix = WebtoonRepository.BOOKMARK_PREFIX;
-        const cacheKey = prefix + user + '_' + page;
-
-        const required = select == Select.BOOKMARK;
+    public async paginateWebtoonsIncludeBookmarkWithSequelize(user: string, page: number, size: number) {
+        const cacheKey = WebtoonRepository.ALL_PREFIX + user + '_page-' + page;
 
         // 캐시 확인
         const cachedResult = getCachedQuery(cacheKey);
         if (cachedResult) return cachedResult;
 
         // 캐시 없는 경우
-        const offset = (page - 1) * size;
+        const offset = setOffset(page, size);
         const result = await webtoonS.findAndCountAll({
             include: [{
                 model: bookmarkS,
                 where: { user },
-                required: required
+                required: false
             }],
             limit: size,
-            offset: offset
+            offset: offset,
+            order: [
+                ['id', 'DESC']
+            ]
         });
 
-        // 총 페이지 수 계산
-        const totalCount = result.count;
-        const totalPages = Math.ceil(totalCount / size);
-
-        // 결과와 총 페이지 수를 함께 반환
-        const response = {
-            data: result.rows,
-            totalPages: totalPages
-        }
+        const response = calculateTotalPages(size, result);
 
         // 결과를 캐시에 저장
         putCachedQuery(cacheKey, response);
@@ -56,8 +47,8 @@ class WebtoonRepository {
         return response;
     }
 
-    public async findWebtoonIncludePlatformByIdWithSequelize(id: number, user: string) {
-        const cacheKey = WebtoonRepository.DETAILS_PREFIX + user;
+    public async findWebtoonIncludePlatformAndLinkByIdWithSequelize(id: number, user: string) {
+        const cacheKey = WebtoonRepository.DETAILS_PREFIX + 'id-' + id + '_' + user;
 
         // 캐시 확인
         const cachedResult = getCachedQuery(cacheKey);
@@ -72,7 +63,13 @@ class WebtoonRepository {
                 required: false
             }, {
                 model: webtoonPlatformS,
-                include: [platformS]
+                include: [{
+                    model: platformS,
+                    include: [{
+                        model: linkS,
+                        where: { webtoonId: id }
+                    }]
+                }]
             }]
         });
 
@@ -94,15 +91,10 @@ class WebtoonRepository {
             desc: data.getWebtoon().getDesc()
         }, { transaction });
 
-        cacheClear();
+        deleteKeysWithPattern([WebtoonRepository.ALL_PREFIX]);
 
         return result;
     }
-}
-
-export enum Select {
-    ALL,
-    BOOKMARK
 }
 
 export { WebtoonRepository }

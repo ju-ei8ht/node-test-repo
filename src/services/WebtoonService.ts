@@ -1,10 +1,11 @@
 import { DBManager } from 'configs/db';
 import { getMetadata, getOriginLink } from 'MetadataUtil';
-import { Select, WebtoonRepository } from 'WebtoonRepository';
+import { WebtoonRepository } from 'WebtoonRepository';
 import { PlatformRepository } from 'PlatformRepository';
 import { LinkRepository } from 'LinkRepository';
 import { WebtoonPlatformRepository } from 'WebtoonPlatformRepository';
 import { PlatformDTO, WebtoonDTO, WebtoonDetailsDTO, WebtoonsOutDTO } from 'WebtoonDTO';
+import { NotFoundError } from 'ErrorUtils';
 
 const dbManager = DBManager.getInstance();
 const webtoonRepository = WebtoonRepository.getInstance();
@@ -15,12 +16,9 @@ const webtoonPlatformRepository = WebtoonPlatformRepository.getInstance();
 /**
  * 웹툰 조회 (전체 / 북마크)
  */
-async function getWebtoons(select: Select, user: string, page: number, size: number) {
+async function getWebtoons(user: string, page: number, size: number) {
     try {
-        let result;
-        if (select == Select.ALL) result = await webtoonRepository.paginateWebtoonsIncludeBookmarkWithSequelize(Select.ALL, user, page, size);
-        else if (select == Select.BOOKMARK) result = await webtoonRepository.paginateWebtoonsIncludeBookmarkWithSequelize(Select.BOOKMARK, user, page, size);
-
+        const result = await webtoonRepository.paginateWebtoonsIncludeBookmarkWithSequelize(user, page, size);
         const { data, totalPages } = result;
         const webtoons = data.map((webtoon: any) => {
             return new WebtoonDTO(
@@ -44,7 +42,9 @@ async function getWebtoons(select: Select, user: string, page: number, size: num
  */
 async function getWebtoonDetails(id: number, user: string) {
     try {
-        const data = await webtoonRepository.findWebtoonIncludePlatformByIdWithSequelize(id, user);
+        const data = await webtoonRepository.findWebtoonIncludePlatformAndLinkByIdWithSequelize(id, user);
+
+        if (!data) throw new NotFoundError();
 
         const { webtoon_platforms } = data;
 
@@ -61,7 +61,7 @@ async function getWebtoonDetails(id: number, user: string) {
             return new PlatformDTO(
                 platform.image,
                 platform.name,
-                platform.url
+                platform.url + platform.link.url
             );
         });
 
