@@ -5,7 +5,7 @@ import cache from 'memory-cache';
 function createCacheKey(prefix: string, user?: string, page?: number, id?: number) {
     let pattern = prefix + 'id-' + id + '_';
 
-    if (!user && prefix == WebtoonRepository.DETAILS_PREFIX) return pattern;
+    if (!user) return pattern;
 
     if (prefix == WebtoonRepository.ALL_PREFIX || prefix == BookmarkRepository.BOOKMARK_PREFIX) {
         pattern = prefix + user + '_page-';

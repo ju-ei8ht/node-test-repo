@@ -1,4 +1,4 @@
-import type { Transaction } from "sequelize";
+import type { Model, Transaction } from "sequelize";
 import { bookmarkS, genreS, webtoonGenreS, webtoonS } from "models/sequelize";
 import { createCacheKey, deleteKeysWithPattern, getCachedQuery, putCachedQuery } from "CacheUtils";
 import { WebtoonRepository } from "WebtoonRepository";
@@ -8,6 +8,7 @@ class BookmarkRepository {
 
     private static instance: BookmarkRepository;
     public static readonly BOOKMARK_PREFIX = 'BOOKMARKS_';
+    public static readonly BOOKMARK_EXIST_PREFIX = 'BOOKMARK_EXIST_';
 
     private constructor() { }
 
@@ -50,7 +51,19 @@ class BookmarkRepository {
     }
 
     public async findBookmarkByWebtoonIdAndUserWithSequelize(webtoonId: number, user: string) {
-        return await bookmarkS.findOne({ where: { webtoonId, user } })
+        const cacheKey = createCacheKey(BookmarkRepository.BOOKMARK_EXIST_PREFIX, user, undefined, webtoonId);
+
+        // 캐시 확인
+        const cachedResult = getCachedQuery(cacheKey);
+        if (cachedResult) return cachedResult;
+
+        // 캐시 없는 경우
+        const result = await bookmarkS.findOne({ where: { webtoonId, user } });
+
+        // 결과를 캐시에 저장
+        putCachedQuery(cacheKey, result);
+
+        return result;
     }
 
     public async findBookmarksByUserWithSequelize(user: string) {
@@ -63,14 +76,28 @@ class BookmarkRepository {
             user: user
         }, { transaction });
 
+        this.deleteCaches(webtoonId, user);
+
+        return result;
+    }
+
+    public async deleteWithSequelize(bookmark: Model) {
+        const webtoonId = bookmark.get().webtoonId;
+        const user = bookmark.get().user;
+
+        await bookmark.destroy();
+
+        this.deleteCaches(webtoonId, user);
+    }
+
+    private deleteCaches(webtoonId: number, user: string) {
         const keys: string[] = [
             createCacheKey(WebtoonRepository.ALL_PREFIX, user),
             createCacheKey(BookmarkRepository.BOOKMARK_PREFIX, user),
-            createCacheKey(WebtoonRepository.DETAILS_PREFIX, user, undefined, webtoonId)
+            createCacheKey(WebtoonRepository.DETAILS_PREFIX, user, undefined, webtoonId),
+            createCacheKey(BookmarkRepository.BOOKMARK_EXIST_PREFIX, user, undefined, webtoonId)
         ]
         deleteKeysWithPattern(keys);
-
-        return result;
     }
 }
 
