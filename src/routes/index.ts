@@ -5,6 +5,8 @@ import { errorHandler } from 'ErrorUtils';
 import router from './router';
 import typeDefs from 'graphql/typeDefs';
 import resolvers from 'graphql/resolvers';
+import socketConnection from 'SocketController';
+import http from 'http';
 import cors from 'cors';
 
 const app = express();
@@ -12,6 +14,7 @@ const app = express();
 app.use(cors());
 
 const server = new ApolloServer({ typeDefs, resolvers });
+const httpServer = http.createServer(app);
 
 await server.start();
 server.applyMiddleware({ app });
@@ -33,6 +36,8 @@ app.use(express.json());
 app.use(router);
 app.use(errorHandler);
 
-app.listen(port, () => {
+socketConnection(httpServer);
+
+httpServer.listen(port, () => {
     console.log(`Listening on port ${port}...`);
 });

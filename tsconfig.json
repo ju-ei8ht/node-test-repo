@@ -28,6 +28,7 @@
     "paths": {
       "FrontController": ["controllers/FrontController"],
       "WebtoonController": ["controllers/WebtoonController"],
+      "SocketController": ["controllers/SocketController"],
       "WebtoonService": ["services/WebtoonService"],
       "BookmarkService": ["services/BookmarkService"],
       "WebtoonRepository": ["repositories/WebtoonRepository"],

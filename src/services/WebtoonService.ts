@@ -16,7 +16,7 @@ const genreRepository = GenreRepository.getInstance();
 const webtoonGenreRepository = WebtoonGenreRepository.getInstance();
 
 /**
- * 웹툰 조회 (전체 / 북마크)
+ * 웹툰 전체 조회
  */
 async function getWebtoons(user: string, page: number, size: number) {
     try {
