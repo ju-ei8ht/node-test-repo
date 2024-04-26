@@ -1,6 +1,6 @@
 import type { Transaction } from "sequelize";
 import type { RegisterDTO } from "WebtoonDTO";
-import { bookmarkS, linkS, platformS, webtoonPlatformS, webtoonS } from "models/sequelize";
+import { bookmarkS, linkS, platformS, webtoonS } from "models/sequelize";
 import { createCacheKey, deleteKeysWithPattern, getCachedQuery, putCachedQuery } from "CacheUtils";
 import { calculateTotalPages, setOffset } from "PaginationUtils";
 
@@ -47,7 +47,7 @@ class WebtoonRepository {
         return response;
     }
 
-    public async findWebtoonIncludePlatformAndLinkByIdWithSequelize(id: number, user: string) {
+    public async findWebtoonIncludeBookmarkAndLinkByIdWithSequelize(id: number, user: string) {
         const cacheKey = createCacheKey(WebtoonRepository.DETAILS_PREFIX, user, undefined, id);
 
         // 캐시 확인
@@ -62,14 +62,8 @@ class WebtoonRepository {
                 where: { user },
                 required: false
             }, {
-                model: webtoonPlatformS,
-                include: [{
-                    model: platformS,
-                    include: [{
-                        model: linkS,
-                        where: { webtoonId: id }
-                    }]
-                }]
+                model: linkS,
+                include: [{ model: platformS }]
             }]
         });
 

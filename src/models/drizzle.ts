@@ -22,12 +22,6 @@ const platformD = mysqlTable('platform', {
     url: varchar('url', { length: 255 }).notNull().unique()
 });
 
-const webtoonPlatformD = mysqlTable('webtoon_platform', {
-    id: serial('id').primaryKey(),
-    webtoonId: bigint('webtoon_id', { mode: 'number' }).references(() => webtoonD.id).notNull(),
-    platformId: bigint('platform_id', { mode: 'number' }).references(() => platformD.id).notNull()
-});
-
 const bookmarkD = mysqlTable('bookmark', {
     id: serial('id').primaryKey(),
     webtoonId: bigint('webtoon_id', { mode: 'number' }).references(() => webtoonD.id).notNull(),
@@ -36,4 +30,4 @@ const bookmarkD = mysqlTable('bookmark', {
     latest: int('latest').default(-1).notNull()
 });
 
-export { webtoonD, linkD, platformD, webtoonPlatformD, bookmarkD }
+export { webtoonD, linkD, platformD, bookmarkD }

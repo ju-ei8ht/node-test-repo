@@ -91,30 +91,6 @@ const platformModel = {
     }
 };
 
-const webtoonPlatformModel = {
-    tableName: 'webtoon_platform',
-    definition:{
-        id: {
-            type: DataTypes.BIGINT,
-            primaryKey: true,
-            autoIncrement: true
-        },
-        webtoonId: {
-            type: DataTypes.BIGINT,
-            allowNull: false
-        },
-        platformId: {
-            type: DataTypes.BIGINT,
-            allowNull: false
-        }
-    },
-    options: {
-        tableName: 'webtoon_platform',
-        freezeTableName: true,
-        timestamps: false
-    }
-};
-
 const bookmarkModel = {
     tableName: 'bookmark',
     definition: {
@@ -153,21 +129,16 @@ const dbManager = DBManager.getInstance();
 const sequelize = dbManager.getSequelize();
 
 const webtoonS = sequelize.define(webtoonModel.tableName, webtoonModel.definition, webtoonModel.options);
-const webtoonPlatformS = sequelize.define(webtoonPlatformModel.tableName, webtoonPlatformModel.definition, webtoonPlatformModel.options);
 const platformS = sequelize.define(platformModel.tableName, platformModel.definition, platformModel.options);
 const bookmarkS = sequelize.define(bookmarkModel.tableName, bookmarkModel.definition, bookmarkModel.options);
 const linkS = sequelize.define(linkModel.tableName, linkModel.definition, linkModel.options);
 
-webtoonS.hasMany(webtoonPlatformS);
-platformS.hasMany(webtoonPlatformS);
-webtoonS.hasOne(linkS);
+webtoonS.hasMany(linkS);
 platformS.hasOne(linkS);
 webtoonS.hasOne(bookmarkS);
 
-webtoonPlatformS.belongsTo(webtoonS);
-webtoonPlatformS.belongsTo(platformS)
 linkS.belongsTo(webtoonS);
 linkS.belongsTo(platformS);
 bookmarkS.belongsTo(webtoonS);
 
-export { webtoonS, platformS, webtoonPlatformS, bookmarkS, linkS }
+export { webtoonS, platformS, bookmarkS, linkS }

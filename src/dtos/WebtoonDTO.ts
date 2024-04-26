@@ -2,19 +2,19 @@ import type { Model } from "sequelize";
 
 class WebtoonDetailsDTO{
     private webtoon: WebtoonDTO;
-    private platforms: PlatformDTO[];
+    private links: LinkDTO[];
 
-    constructor(webtoon: WebtoonDTO, platforms: PlatformDTO[]) {
+    constructor(webtoon: WebtoonDTO, platforms: LinkDTO[]) {
         this.webtoon = webtoon;
-        this.platforms = platforms;
+        this.links = platforms;
     }
 
     getWebtoon() {
         return this.webtoon;
     }
 
-    getPlatforms() {
-        return this.platforms;
+    getLinks() {
+        return this.links;
     }
 }
 
@@ -38,9 +38,9 @@ class WebtoonsOutDTO{
 
 class RegisterDTO {
     private webtoon: WebtoonDTO;
-    private platform: PlatformDTO;
+    private platform: LinkDTO;
 
-    constructor(webtoon: WebtoonDTO, platform: PlatformDTO) {
+    constructor(webtoon: WebtoonDTO, platform: LinkDTO) {
         this.webtoon = webtoon;
         this.platform = platform;
     }
@@ -108,7 +108,7 @@ class WebtoonDTO {
     }
 }
 
-class PlatformDTO {
+class LinkDTO {
     private image: string;
     private name: string;
     private url: string;
@@ -133,11 +133,11 @@ class PlatformDTO {
 }
 
 class MetadataDTO {
-    private platform: PlatformDTO;
+    private platform: LinkDTO;
     private title: string;
     private author: string;
 
-    constructor(platform: PlatformDTO, title: string, author: string) {
+    constructor(platform: LinkDTO, title: string, author: string) {
         this.platform = platform;
         this.title = title;
         this.author = author;
@@ -156,4 +156,4 @@ class MetadataDTO {
     }
 }
 
-export { WebtoonDetailsDTO, WebtoonsOutDTO, RegisterDTO, WebtoonDTO, PlatformDTO, MetadataDTO }
+export { WebtoonDetailsDTO, WebtoonsOutDTO, RegisterDTO, WebtoonDTO, LinkDTO, MetadataDTO }

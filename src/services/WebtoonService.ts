@@ -4,7 +4,7 @@ import { WebtoonRepository } from 'WebtoonRepository';
 import { PlatformRepository } from 'PlatformRepository';
 import { LinkRepository } from 'LinkRepository';
 import { WebtoonPlatformRepository } from 'WebtoonPlatformRepository';
-import { PlatformDTO, WebtoonDTO, WebtoonDetailsDTO, WebtoonsOutDTO } from 'WebtoonDTO';
+import { LinkDTO, WebtoonDTO, WebtoonDetailsDTO, WebtoonsOutDTO } from 'WebtoonDTO';
 import { NotFoundError } from 'ErrorUtils';
 
 const dbManager = DBManager.getInstance();
@@ -42,11 +42,11 @@ async function getWebtoons(user: string, page: number, size: number) {
  */
 async function getWebtoonDetails(id: number, user: string) {
     try {
-        const data = await webtoonRepository.findWebtoonIncludePlatformAndLinkByIdWithSequelize(id, user);
+        const data = await webtoonRepository.findWebtoonIncludeBookmarkAndLinkByIdWithSequelize(id, user);
 
         if (!data) throw new NotFoundError();
 
-        const { webtoon_platforms } = data;
+        const { links } = data;
 
         const webtoon = new WebtoonDTO(
             data.get().id,
@@ -56,12 +56,12 @@ async function getWebtoonDetails(id: number, user: string) {
             data.get().desc,
             data.get().bookmark
         );
-        const platforms = webtoon_platforms.map((wp: any) => {
-            const { platform } = wp;
-            return new PlatformDTO(
+        const platforms = links.map((p: any) => {
+            const { platform } = p;
+            return new LinkDTO(
                 platform.image,
                 platform.name,
-                platform.url + platform.link.url
+                platform.url + p.url
             );
         });
 
@@ -109,7 +109,6 @@ async function registerWebtoon(url: URL) {
         const platformId = platform.get().id;
 
         // 관계 설정
-        await webtoonPlatformRepository.saveWithSequelize(webtoonId, platformId, transaction);
         await linkRepository.saveWithSequelize(path, webtoonId, platformId, transaction);
 
         await transaction.commit();

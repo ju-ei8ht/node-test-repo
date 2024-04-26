@@ -5,10 +5,10 @@ type Webtoons {
 
 type Details {
     webtoon: Webtoon!
-    platforms: [Platform!]!
+    links: [Link!]!
 }
 
-type Platform {
+type Link {
     image: String!
     name: String!
     url: String!

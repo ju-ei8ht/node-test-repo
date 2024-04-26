@@ -1,6 +1,6 @@
 import * as cheerio from 'cheerio';
 import axios, { AxiosError, type AxiosResponse } from 'axios';
-import { MetadataDTO, PlatformDTO, RegisterDTO, WebtoonDTO } from 'WebtoonDTO';
+import { MetadataDTO, LinkDTO, RegisterDTO, WebtoonDTO } from 'WebtoonDTO';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -38,7 +38,7 @@ function getNaver($: cheerio.CheerioAPI) {
     const title = $('meta[property="og:title"]').attr('content');
     const author = $('#ct > div.section_toon_info > div.info_front > div.area_info > span.author').text().trim();
 
-    const platform = new PlatformDTO(platformImage as string, platformName as string, platformUrl as string);
+    const platform = new LinkDTO(platformImage as string, platformName as string, platformUrl as string);
     return new MetadataDTO(platform, title as string, author);
 }
 
@@ -49,7 +49,7 @@ function getKakao($: cheerio.CheerioAPI, url: URL) {
     const title = $('meta[property="og:title"]').attr('content')?.split(' |')[0];
     const author = $('#root > main > div > div > div.relative.z-1.h-87 > div.pt-16.px-11 > p.whitespace-pre-wrap.break-all.break-words.support-break-word.overflow-hidden.text-ellipsis.\!whitespace-nowrap.s12-regular-white.mt-4.opacity-75.text-center.leading-14').text().trim();
 
-    const platform = new PlatformDTO(platformImage as string, platformName as string, platformUrl as string);
+    const platform = new LinkDTO(platformImage as string, platformName as string, platformUrl as string);
     return new MetadataDTO(platform, title as string, author);
 }
 
