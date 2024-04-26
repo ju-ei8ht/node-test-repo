@@ -3,7 +3,6 @@ import { getMetadata, getOriginLink } from 'MetadataUtil';
 import { WebtoonRepository } from 'WebtoonRepository';
 import { PlatformRepository } from 'PlatformRepository';
 import { LinkRepository } from 'LinkRepository';
-import { WebtoonPlatformRepository } from 'WebtoonPlatformRepository';
 import { LinkDTO, WebtoonDTO, WebtoonDetailsDTO, WebtoonsOutDTO } from 'WebtoonDTO';
 import { NotFoundError } from 'ErrorUtils';
 
@@ -11,7 +10,6 @@ const dbManager = DBManager.getInstance();
 const webtoonRepository = WebtoonRepository.getInstance();
 const platformRepository = PlatformRepository.getInstance();
 const linkRepository = LinkRepository.getInstance();
-const webtoonPlatformRepository = WebtoonPlatformRepository.getInstance();
 
 /**
  * 웹툰 조회 (전체 / 북마크)
