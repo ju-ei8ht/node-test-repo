@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import { DBManager } from 'configs/db';
+import { DB, DBManager } from 'configs/db';
 
 const webtoonModel = {
     tableName: 'webtoon',
@@ -41,7 +41,7 @@ const linkModel = {
             primaryKey: true,
             autoIncrement: true
         },
-        url: {
+        path: {
             type: DataTypes.STRING,
             allowNull: false,
             unique: true
@@ -78,7 +78,7 @@ const platformModel = {
             allowNull: false,
             unique: true
         },
-        url: {
+        host: {
             type: DataTypes.STRING,
             allowNull: false,
             unique: true
@@ -125,20 +125,70 @@ const bookmarkModel = {
     }
 };
 
-const dbManager = DBManager.getInstance();
+const genreModel = {
+    tableName: 'genre',
+    definition: {
+        id: {
+            type: DataTypes.BIGINT,
+            primaryKey: true,
+            autoIncrement: true
+        },
+        name: {
+            type: DataTypes.STRING,
+            allowNull: false
+        }
+    },
+    options: {
+        tableName: 'genre',
+        freezeTableName: true,
+        timestamps: false
+    }
+}
+
+const webtoonGenreModel = {
+    tableName: 'webtoon_genre',
+    definition: {
+        id: {
+            type: DataTypes.BIGINT,
+            primaryKey: true,
+            autoIncrement: true
+        },
+        webtoonId: {
+            type: DataTypes.BIGINT,
+            allowNull: false
+        },
+        genreId: {
+            type: DataTypes.BIGINT,
+            allowNull: false
+        }
+    },
+    options: {
+        tableName: 'webtoon_genre',
+        freezeTableName: true,
+        timestamps: false
+    }
+}
+
+const dbManager = DBManager.getInstance(DB.MySQL);
 const sequelize = dbManager.getSequelize();
 
 const webtoonS = sequelize.define(webtoonModel.tableName, webtoonModel.definition, webtoonModel.options);
 const platformS = sequelize.define(platformModel.tableName, platformModel.definition, platformModel.options);
 const bookmarkS = sequelize.define(bookmarkModel.tableName, bookmarkModel.definition, bookmarkModel.options);
 const linkS = sequelize.define(linkModel.tableName, linkModel.definition, linkModel.options);
+const genreS = sequelize.define(genreModel.tableName, genreModel.definition, genreModel.options);
+const webtoonGenreS = sequelize.define(webtoonGenreModel.tableName, webtoonGenreModel.definition, webtoonGenreModel.options);
 
 webtoonS.hasMany(linkS);
 platformS.hasOne(linkS);
 webtoonS.hasOne(bookmarkS);
+webtoonS.hasMany(webtoonGenreS);
+genreS.hasMany(webtoonGenreS);
 
 linkS.belongsTo(webtoonS);
 linkS.belongsTo(platformS);
 bookmarkS.belongsTo(webtoonS);
+webtoonGenreS.belongsTo(webtoonS);
+webtoonGenreS.belongsTo(genreS);
 
-export { webtoonS, platformS, bookmarkS, linkS }
+export { webtoonS, platformS, bookmarkS, linkS, genreS, webtoonGenreS }

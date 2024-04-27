@@ -10,7 +10,7 @@ const webtoonD = mysqlTable('webtoon', {
 
 const linkD = mysqlTable('link', {
     id: serial('id').primaryKey(),
-    url: varchar('url', { length: 255 }).notNull().unique(),
+    path: varchar('path', { length: 255 }).notNull().unique(),
     webtoonId: bigint('webtoon_id', {mode: 'number'}).references(() => webtoonD.id).notNull(),
     platformId: bigint('platform_id', {mode: 'number'}).references(() => platformD.id).notNull()
 });
@@ -19,7 +19,7 @@ const platformD = mysqlTable('platform', {
     id: serial('id').primaryKey(),
     image: varchar('image', { length: 255 }),
     name: varchar('name', { length: 50 }).notNull().unique(),
-    url: varchar('url', { length: 255 }).notNull().unique()
+    host: varchar('host', { length: 255 }).notNull().unique()
 });
 
 const bookmarkD = mysqlTable('bookmark', {
@@ -30,4 +30,15 @@ const bookmarkD = mysqlTable('bookmark', {
     latest: int('latest').default(-1).notNull()
 });
 
-export { webtoonD, linkD, platformD, bookmarkD }
+const genreD = mysqlTable('genre', {
+    id: serial('id').primaryKey(),
+    name: varchar('name', { length: 255 }).notNull()
+});
+
+const webtoonGenreD = mysqlTable('webtoon_genre', {
+    id: serial('id').primaryKey(),
+    webtoonId: bigint('webtoon_id', { mode: 'number' }).references(() => webtoonD.id).notNull(),
+    genreId: bigint('genre_id', { mode: 'number' }).references(() => genreD.id).notNull()
+});
+
+export { webtoonD, linkD, platformD, bookmarkD, genreD, webtoonGenreD }

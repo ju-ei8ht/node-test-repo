@@ -1,11 +1,11 @@
-import { DBManager } from "configs/db"
+import { DB, DBManager } from "configs/db"
 import { CreatedDTO } from "ResponseDTO";
 import { BookmarkRepository } from "BookmarkRepository";
 import { AlreadyExistsError, BadRequestError } from "ErrorUtils";
 import { isValidEmail } from "ValidationUtils";
 import { WebtoonDTO, WebtoonsOutDTO } from "WebtoonDTO";
 
-const dbManager = DBManager.getInstance();
+const dbManager = DBManager.getInstance(DB.MySQL);
 const bookmarkRepository = BookmarkRepository.getInstance();
 
 async function getBookmarks(user: string, page: number, size: number) {
@@ -18,6 +18,7 @@ async function getBookmarks(user: string, page: number, size: number) {
                 bookmark.get().webtoon.image,
                 bookmark.get().webtoon.title,
                 bookmark.get().webtoon.author,
+                bookmark.get().webtoon.webtoon_genres,
                 bookmark.get().webtoon.desc,
                 bookmark
             );

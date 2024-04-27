@@ -1,6 +1,6 @@
 import express, { type NextFunction, type Request, type Response } from 'express';
 import { ApolloServer } from 'apollo-server-express';
-import { DBManager, ORM } from 'configs/db';
+import { DB, DBManager, ORM } from 'configs/db';
 import { Error } from 'ErrorUtils';
 import router from './router';
 import typeDefs from 'graphql/typeDefs';
@@ -14,7 +14,7 @@ server.applyMiddleware({ app });
 
 const port = process.env.PORT || 3000;
 
-const dbManager = DBManager.getInstance();
+const dbManager = DBManager.getInstance(DB.MySQL);
 
 (async () => {
     try {

@@ -1,6 +1,6 @@
 import type { Transaction } from "sequelize";
 import type { RegisterDTO } from "WebtoonDTO";
-import { bookmarkS, linkS, platformS, webtoonS } from "models/sequelize";
+import { bookmarkS, genreS, linkS, platformS, webtoonGenreS, webtoonS } from "models/sequelize";
 import { createCacheKey, deleteKeysWithPattern, getCachedQuery, putCachedQuery } from "CacheUtils";
 import { calculateTotalPages, setOffset } from "PaginationUtils";
 
@@ -31,6 +31,9 @@ class WebtoonRepository {
                 model: bookmarkS,
                 where: { user },
                 required: false
+            }, {
+                model: webtoonGenreS,
+                include: [genreS]
             }],
             limit: size,
             offset: offset,
@@ -63,7 +66,10 @@ class WebtoonRepository {
                 required: false
             }, {
                 model: linkS,
-                include: [{ model: platformS }]
+                include: [platformS]
+            }, {
+                model: webtoonGenreS,
+                include: [genreS]
             }]
         });
 

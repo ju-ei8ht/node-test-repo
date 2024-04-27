@@ -1,5 +1,5 @@
 import type { Transaction } from "sequelize";
-import { bookmarkS, webtoonS } from "models/sequelize";
+import { bookmarkS, genreS, webtoonGenreS, webtoonS } from "models/sequelize";
 import { createCacheKey, deleteKeysWithPattern, getCachedQuery, putCachedQuery } from "CacheUtils";
 import { WebtoonRepository } from "WebtoonRepository";
 import { calculateTotalPages, setOffset } from "PaginationUtils";
@@ -27,7 +27,13 @@ class BookmarkRepository {
         const offset = setOffset(page, size);
         const result = await bookmarkS.findAndCountAll({
             where: { user },
-            include: [webtoonS],
+            include: [{
+                model: webtoonS,
+                include: [{
+                    model: webtoonGenreS,
+                    include: [genreS]
+                }]
+            }],
             limit: size,
             offset: offset,
             order: [

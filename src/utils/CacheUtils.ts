@@ -7,7 +7,7 @@ function createCacheKey(prefix: string, user?: string, page?: number, id?: numbe
 
     if (!user && prefix == WebtoonRepository.DETAILS_PREFIX) return pattern;
 
-    if (prefix == WebtoonRepository.ALL_PREFIX || BookmarkRepository.BOOKMARK_PREFIX) {
+    if (prefix == WebtoonRepository.ALL_PREFIX || prefix == BookmarkRepository.BOOKMARK_PREFIX) {
         pattern = prefix + user + '_page-';
 
         if (!page) return pattern;

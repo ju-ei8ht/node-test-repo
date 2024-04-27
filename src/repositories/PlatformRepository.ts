@@ -21,7 +21,7 @@ class PlatformRepository {
         return await platformS.create({
             image: data.getPlatform().getImage(),
             name: data.getPlatform().getName(),
-            url: data.getPlatform().getUrl()
+            host: data.getPlatform().getUrl()
         }, { transaction });
     }
 }

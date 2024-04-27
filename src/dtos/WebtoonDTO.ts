@@ -1,10 +1,10 @@
 import type { Model } from "sequelize";
 
-class WebtoonDetailsDTO{
+class WebtoonDetailsDTO {
     private webtoon: WebtoonDTO;
-    private links: LinkDTO[];
+    private links: PlatformDTO[];
 
-    constructor(webtoon: WebtoonDTO, platforms: LinkDTO[]) {
+    constructor(webtoon: WebtoonDTO, platforms: PlatformDTO[]) {
         this.webtoon = webtoon;
         this.links = platforms;
     }
@@ -18,7 +18,7 @@ class WebtoonDetailsDTO{
     }
 }
 
-class WebtoonsOutDTO{
+class WebtoonsOutDTO {
     private totalPages: number;
     private webtoons: WebtoonDTO;
 
@@ -38,11 +38,13 @@ class WebtoonsOutDTO{
 
 class RegisterDTO {
     private webtoon: WebtoonDTO;
-    private platform: LinkDTO;
+    private platform: PlatformDTO;
+    private genres: GenreDTO[];
 
-    constructor(webtoon: WebtoonDTO, platform: LinkDTO) {
+    constructor(webtoon: WebtoonDTO, platform: PlatformDTO, genres: GenreDTO[]) {
         this.webtoon = webtoon;
         this.platform = platform;
+        this.genres = genres;
     }
 
     getWebtoon() {
@@ -52,6 +54,10 @@ class RegisterDTO {
     getPlatform() {
         return this.platform;
     }
+
+    getGenres() {
+        return this.genres;
+    }
 }
 
 class WebtoonDTO {
@@ -59,16 +65,22 @@ class WebtoonDTO {
     private image: string;
     private title: string;
     private author: string;
+    private genre: string[];
     private desc: string;
     private isBookmark: boolean;
     private isAlarm: boolean;
     private latest: number;
 
-    constructor(id: number, image: string, title: string, author: string, desc: string, bookmark?: Model<any, any>) {
+    constructor(id: number, image: string, title: string, author: string, genres: GenreDTO[] | Model[], desc: string, bookmark?: Model<any, any>) {
         this.id = id;
         this.image = image;
         this.title = title;
         this.author = author;
+        if (genres[0] instanceof GenreDTO) this.genre = genres.map(genre => (genre as GenreDTO).getName());
+        else this.genre = genres.map((data: any) => {
+            const { genre } = data;
+            return genre.name
+        });
         this.desc = desc;
         this.isBookmark = bookmark != null;
         this.isAlarm = bookmark == null ? false : bookmark.get().alarm;
@@ -91,6 +103,10 @@ class WebtoonDTO {
         return this.author;
     }
 
+    getGenre() {
+        return this.genre;
+    }
+
     getDesc() {
         return this.desc;
     }
@@ -108,7 +124,7 @@ class WebtoonDTO {
     }
 }
 
-class LinkDTO {
+class PlatformDTO {
     private image: string;
     private name: string;
     private url: string;
@@ -132,15 +148,29 @@ class LinkDTO {
     }
 }
 
+class GenreDTO {
+    private name: string;
+
+    constructor(name: string) {
+        this.name = name;
+    }
+
+    getName() {
+        return this.name;
+    }
+}
+
 class MetadataDTO {
-    private platform: LinkDTO;
+    private platform: PlatformDTO;
     private title: string;
     private author: string;
+    private genres: GenreDTO[];
 
-    constructor(platform: LinkDTO, title: string, author: string) {
+    constructor(platform: PlatformDTO, title: string, author: string, genres: GenreDTO[]) {
         this.platform = platform;
         this.title = title;
         this.author = author;
+        this.genres = genres;
     }
 
     getPlatform() {
@@ -154,6 +184,10 @@ class MetadataDTO {
     getAuthor() {
         return this.author;
     }
+
+    getGenres() {
+        return this.genres;
+    }
 }
 
-export { WebtoonDetailsDTO, WebtoonsOutDTO, RegisterDTO, WebtoonDTO, LinkDTO, MetadataDTO }
+export { WebtoonDetailsDTO, WebtoonsOutDTO, RegisterDTO, WebtoonDTO, PlatformDTO, GenreDTO, MetadataDTO }
