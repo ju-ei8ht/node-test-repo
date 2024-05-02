@@ -28,18 +28,18 @@ jobs:
     - name: Login to Docker Hub
       uses: docker/login-action@v3
       with:
-        username: ${USERNAME}
-        password: ${ACCESS_TOKEN}
+        username: ${{ env.USERNAME }}
+        password: ${{ env.ACCESS_TOKEN }}
         
     - name: Build the Docker image
       run: docker build \
-        --build-arg DB_HOST=${DB_HOST} \
-        --build-arg DB_DATABASE=${DB_DATABASE} \
-        --build-arg MYSQL_PORT=${MYSQL_PORT} \
-        --build-arg MYSQL_USER=${MYSQL_USER} \
-        --build-arg MYSQL_PWD=${MYSQL_PWD} \
-        --build-arg UNSHORTEN_API=${UNSHORTEN_API} \
-        -t ${USERNAME}/vvtoon-a:node .
+        --build-arg DB_HOST=${{ env.DB_HOST }} \
+        --build-arg DB_DATABASE=${{ env.DB_DATABASE }} \
+        --build-arg MYSQL_PORT=${{ env.MYSQL_PORT }} \
+        --build-arg MYSQL_USER=${{ env.MYSQL_USER }} \
+        --build-arg MYSQL_PWD=${{ env.MYSQL_PWD }} \
+        --build-arg UNSHORTEN_API=${{ env.UNSHORTEN_API }} \
+        -t ${{ env.USERNAME }}/vvtoon-a:node .
 
     - name: Push Docker image to Docker Hub
-      run: docker push ${USERNAME}/vvtoon-a:node
+      run: docker push ${{ env.USERNAME }}/vvtoon-a:node
