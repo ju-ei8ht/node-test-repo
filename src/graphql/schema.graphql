@@ -1,0 +1,32 @@
+type Webtoons {
+    totalPages: Int!
+    webtoons: [Webtoon!]!
+}
+
+type Details {
+    webtoon: Webtoon!
+    links: [Link!]!
+}
+
+type Link {
+    image: String!
+    name: String!
+    url: String!
+}
+
+type Webtoon {
+    id: ID!
+    image: String!
+    title: String!
+    author: String!
+    desc: String!
+    isBookmark: Boolean!
+    isAlarm: Boolean!
+    latest: Int!
+}
+
+type Query {
+    getAllWebtoons(user: String!, page: Int!, size: Int!): Webtoons!
+    getBookmarkWebtoons(user: String!, page: Int!, size: Int!): Webtoons!
+    getWebtoon(user: String!, id: Int!): Details!
+}

@@ -174,5 +174,8 @@ dist
 # Finder (MacOS) folder config
 .DS_Store
 
-# bun
-*.lockb
+# drizzle
+/drizzle
+drizzle.config.*
+
+/sample
