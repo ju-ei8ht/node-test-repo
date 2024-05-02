@@ -1,11 +1,11 @@
 import type { Transaction } from "sequelize";
-import { linkS } from "../models/sequelize";
+import { linkS } from "models/sequelize";
 
 class LinkRepository {
 
     private static instance: LinkRepository;
 
-    constructor() { }
+    private constructor() { }
 
     public static getInstance(): LinkRepository {
         if (this.instance == null) this.instance = new LinkRepository();
@@ -16,13 +16,13 @@ class LinkRepository {
         return await linkS.findOne({ where: { webtoonId, platformId } })
     }
 
-    public async findLinkByUrlWithSequelize(url: string) {
-        return await linkS.findOne({ where: { url } });
+    public async findLinkByUrlWithSequelize(path: string) {
+        return await linkS.findOne({ where: { path } });
     }
 
-    public async saveWithSequelize(url: string, webtoonId: number, platformId: number, transaction: Transaction) {
+    public async saveWithSequelize(path: string, webtoonId: number, platformId: number, transaction: Transaction) {
         return await linkS.create({
-            url: url,
+            path: path,
             webtoonId: webtoonId,
             platformId: platformId
         }, { transaction });

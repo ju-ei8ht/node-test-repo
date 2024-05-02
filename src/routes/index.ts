@@ -1,20 +1,27 @@
-import express, { type NextFunction, type Request, type Response } from 'express';
-import { ApolloServer, gql } from 'apollo-server-express';
-import { DBManager, ORM } from '../configs/db';
-import { Error } from '../utils/ErrorUtils';
+import express from 'express';
+import { ApolloServer } from 'apollo-server-express';
+import { DB, DBManager, ORM } from 'configs/db';
+import { errorHandler } from 'ErrorUtils';
 import router from './router';
-import typeDefs from '../graphql/typeDefs';
-import resolvers from '../graphql/resolvers';
+import typeDefs from 'graphql/typeDefs';
+import resolvers from 'graphql/resolvers';
+import socketConnection from 'SocketController';
+import http from 'http';
+import cors from 'cors';
 
 const app = express();
+
+app.use(cors());
+
 const server = new ApolloServer({ typeDefs, resolvers });
+const httpServer = http.createServer(app);
 
 await server.start();
 server.applyMiddleware({ app });
 
 const port = process.env.PORT || 3000;
 
-const dbManager = DBManager.getInstance();
+const dbManager = DBManager.getInstance(DB.MySQL);
 
 (async () => {
     try {
@@ -27,13 +34,10 @@ const dbManager = DBManager.getInstance();
 
 app.use(express.json());
 app.use(router);
+app.use(errorHandler);
 
-// 에러 핸들러
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-    if (err instanceof Error) res.status(err.getCode()).json(err);
-    res.status(500).json(err);
-});
+socketConnection(httpServer);
 
-app.listen(port, () => {
+httpServer.listen(port, () => {
     console.log(`Listening on port ${port}...`);
 });
