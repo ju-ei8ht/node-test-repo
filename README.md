@@ -16,9 +16,10 @@
     - Passport
     - Kakao OAuth
 
-## ERD
-<iframe width="560" height="315" src='https://dbdiagram.io/e/6613f59c03593b6b61792af3/662ba07a5b24a634d0e4a45c'> </iframe>
-
+## ERD   
+<div style="text-align:center">
+    <img src='vvtoonA.png' alt='logo'>
+</div>
 
 ## INTRO
 * 웹툰 보는데 여기저기 산재해 있어서 하나에서 몰아보고 싶다(북마크).
