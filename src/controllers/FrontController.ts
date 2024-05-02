@@ -1,8 +1,8 @@
 import type { NextFunction, Request, Response } from "express";
 
 const frontController = (fn: any) => {
-    return (req: Request, res: Response, next: NextFunction) => {
-        fn(req, res, next).catch(next)
+    return async (req: Request, res: Response, next: NextFunction) => {
+        await fn(req, res, next).catch(next)
     }
 }
 
