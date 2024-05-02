@@ -15,6 +15,7 @@
     "apollo-server-express": "^3.13.0",
     "axios": "^1.6.8",
     "cheerio": "^1.0.0-rc.12",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.30.7",
     "express": "^4.19.2",
