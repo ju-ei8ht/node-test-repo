@@ -9,10 +9,9 @@ export enum ORM {
     Drizzle
 }
 
-export enum DB {
-    MySQL,
-    PostgreSQL,
-    Redis
+enum DB {
+    RDBMS,
+    NoSQL
 }
 
 class DBConfig {
@@ -25,13 +24,13 @@ class DBConfig {
     dialect: any;
 
     constructor(db: DB) {
-        if (db == DB.MySQL) {
+        if (db == DB.RDBMS) {
             this.host = process.env.DB_HOST;
-            this.port = process.env.MYSQL_PORT;
+            this.port = process.env.DB_PORT;
             this.database = process.env.DB_DATABASE as string;
-            this.user = process.env.MYSQL_USER as string;
-            this.pwd = process.env.MYSQL_PWD;
-            this.dialect = 'mysql';
+            this.user = process.env.DB_USER as string;
+            this.pwd = process.env.DB_PWD;
+            this.dialect = process.env.DB_DIALECT;
         }
     }
 }
@@ -44,28 +43,26 @@ class DBManager {
     private sequelize: Sequelize = new Sequelize({ dialect: 'mysql' });
     private poolConnection: any;
 
-    private constructor(db: DB) {
-        if (db == DB.MySQL) {
-            const dbConfig: DBConfig = new DBConfig(DB.MySQL);
+    private constructor() {
+        const dbConfig: DBConfig = new DBConfig(DB.RDBMS);
 
-            this.sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.pwd, {
-                host: dbConfig.host,
-                dialect: dbConfig.dialect
-            });
-            this.poolConnection = mysql.createPool({
-                connectionLimit: this.LIMIT,
-                host: dbConfig.host,
-                port: dbConfig.port,
-                user: dbConfig.user,
-                password: dbConfig.pwd,
-                database: dbConfig.database,
-                debug: false
-            });
-        }
+        this.sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.pwd, {
+            host: dbConfig.host,
+            dialect: dbConfig.dialect
+        });
+        this.poolConnection = mysql.createPool({
+            connectionLimit: this.LIMIT,
+            host: dbConfig.host,
+            port: dbConfig.port,
+            user: dbConfig.user,
+            password: dbConfig.pwd,
+            database: dbConfig.database,
+            debug: false
+        });
     }
 
-    public static getInstance(db: DB): DBManager {
-        if (this.instance == null) this.instance = new DBManager(db);
+    public static getInstance(): DBManager {
+        if (this.instance == null) this.instance = new DBManager();
         return this.instance;
     }
 

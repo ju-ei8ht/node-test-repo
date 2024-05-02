@@ -1,16 +1,12 @@
-import express from 'express';
-import { ApolloServer } from 'apollo-server-express';
-import { DB, DBManager, ORM } from 'configs/db';
-import { errorHandler } from 'ErrorUtils';
+import express, { type NextFunction, type Request, type Response } from 'express';
+import { ApolloServer, gql } from 'apollo-server-express';
+import { DBManager, ORM } from '../configs/db';
+import { Error } from '../utils/ErrorUtils';
 import router from './router';
-import typeDefs from 'graphql/typeDefs';
-import resolvers from 'graphql/resolvers';
-import cors from 'cors';
+import typeDefs from '../graphql/typeDefs';
+import resolvers from '../graphql/resolvers';
 
 const app = express();
-
-app.use(cors());
-
 const server = new ApolloServer({ typeDefs, resolvers });
 
 await server.start();
@@ -18,7 +14,7 @@ server.applyMiddleware({ app });
 
 const port = process.env.PORT || 3000;
 
-const dbManager = DBManager.getInstance(DB.MySQL);
+const dbManager = DBManager.getInstance();
 
 (async () => {
     try {
@@ -31,7 +27,12 @@ const dbManager = DBManager.getInstance(DB.MySQL);
 
 app.use(express.json());
 app.use(router);
-app.use(errorHandler);
+
+// 에러 핸들러
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+    if (err instanceof Error) res.status(err.getCode()).json(err);
+    res.status(500).json(err);
+});
 
 app.listen(port, () => {
     console.log(`Listening on port ${port}...`);

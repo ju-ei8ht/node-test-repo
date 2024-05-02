@@ -1,5 +1,3 @@
-import type { NextFunction, Request, Response } from "express";
-
 class Error {
     private code: number;
     private message: string;
@@ -66,9 +64,4 @@ class AlreadyExistsError extends Error {
     }
 }
 
-const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
-    if (err instanceof Error) res.status(err.getCode()).json(err);
-    res.status(500).json(err);
-};
-
-export { Error, BadRequestError, NotFoundError, AlreadyExistsError, errorHandler }
+export { Error, BadRequestError, NotFoundError, AlreadyExistsError }
