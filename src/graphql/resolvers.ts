@@ -1,16 +1,23 @@
-import { getBookmarks } from "BookmarkService";
-import { getWebtoonDetails, getWebtoons } from "WebtoonService";
+import { WebtoonDTO } from "../dtos/WebtoonDTO";
+import { WebtoonRepository } from "../repositories/WebtoonRepository"
 
+const webtoonRepository = WebtoonRepository.getInstance();
 const resolvers = {
     Query: {
-        getAllWebtoons: async (_: any, { user, page, size }: { user: string; page: number; size: number }) => {
-            return await getWebtoons(user, page, size);
-        },
-        getBookmarkWebtoons: async (_: any, { user, page, size }: { user: string; page: number; size: number }) => {
-            return await getBookmarks(user, page, size);
-        },
-        getWebtoon: async (_: any, { user, id }: { user: string, id: number }) => {
-            return await getWebtoonDetails(id, user);
+        getAllWebtoons: async () => {
+            const data = await webtoonRepository.findAllWebtoonsIncludeBookmarkWithSequelize();
+            return data.map(webtoon => {
+                return new WebtoonDTO(
+                    webtoon.get().id,
+                    webtoon.get().image,
+                    webtoon.get().title,
+                    webtoon.get().author,
+                    webtoon.get().desc,
+                    webtoon.get().bookmark != null ? true : false,
+                    webtoon.get().bookmark.alarm,
+                    webtoon.get().bookmark.latest
+                );
+            });
         }
     }
 };
