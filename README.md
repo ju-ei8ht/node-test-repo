@@ -1,20 +1,23 @@
-# vvtoonA (가제)
-![logo](https://github.com/vvtoonA/node/assets/107831692/0c218bf1-3a7c-4315-8219-78fd97a9c120)
+# vvtoonA
+<div style="text-align:center">
+    <img src='logo.png' alt='logo'>
+</div>
 
 ## BUILD
 * bun + express
 * ORM
     - Sequelize
     - Drizzle
+    - TypeORM
 * DB
-    - RDBMS: MySQL
+    - RDBMS: MySQL -> PostgreSQL
     - NoSQL: Redis (아마)
 * Auth (한다면)
     - Passport
     - Kakao OAuth
 
 ## ERD
-![ERD](https://github.com/vvtoonA/node/assets/107831692/f40e14f3-30ad-449a-8537-d4180f39167b)
+<iframe width="560" height="315" src='https://dbdiagram.io/e/6613f59c03593b6b61792af3/662ba07a5b24a634d0e4a45c'> </iframe>
 
 
 ## INTRO
@@ -25,9 +28,11 @@
 * 기왕이면 bun도 써보고 싶다.
 * JWT 구현 귀찮으므로 OAuth로 회원관리 할 건데 그것도 귀찮아서 할지 안 할지는 모르겠다.
 * 애초에 프론트엔드를 하게 될지 모르겠다.
-    - 한다면 SVELTE로 SSR 하거나 (일단 RestAPI 만들긴 하겠지만)
-    - Flutter 간단히 배워서 앱 만들거임
+    - 한다면 SVELTE로 SSR 하거나 (일단 RestAPI 만들긴 하겠지만) -> svelte kit으로 CSR
+    - Flutter 간단히 배워서 앱 만들거임 -> google에서 drop함
     - 원래는 SwiftUI 하고 있었는데 애플 개발자 등록할 돈이 없음
+* ElasticSearch로 검색 최적화(인덱싱)
+* embeddings를 통해 웹툰 추천
 
 ## GOAL
 * 기본적인 UI는 [폴센트](https://fallcent.com)를 참고
@@ -37,5 +42,10 @@
 * 알림은 On/Off 가능
 * 일단은 백엔드 API 구현을 목표
     - 끝나면(끝났는데도 취업이 안 되면) 프론트엔드 
-        1. 웹에서 svelte 써서 SSR로 
-        2. Flutter로 구현(예정)
+        1. 웹에서 svelte 써서 SSR로 -> CSR(백엔드 바꾸기 귀찮음)
+        2. Flutter로 구현(예정) -> google에서 drop했기 떄문에 한다면 native로 하거나 hybrid로
+* AI 써먹어봐야지 -> 웹툰 추천
+    - ollama embed 써서(chatGPT 토큰 비싸)
+* CI/CD
+    - 일단 CI는 github actions로 docker hub에 push(local용)
+    - 쿠버네티스나 dagger 써보고 싶지만 모르겠음 귀찮음
