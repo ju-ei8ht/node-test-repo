@@ -6,28 +6,32 @@ WORKDIR /app
 # Install dependencies into temp directory
 # This will cache them and speed up future builds
 FROM base AS install
-RUN mkdir -p /temp/dev /temp/prod && \
-    chown -R bun:bun /temp
+RUN mkdir -p /tmp/dev /tmp/prod && \
+    chown -R bun:bun /tmp
 
 # Copy and install dependencies in development mode
-COPY --chown=bun:bun package.json bun.lockb /temp/dev/
+COPY --chown=bun:bun package.json bun.lockb /tmp/dev/
 USER bun
-RUN cd /temp/dev && bun install --frozen-lockfile
+RUN cd /tmp/dev && bun install --frozen-lockfile
 
 # Copy and install dependencies in production mode
-COPY --chown=bun:bun package.json bun.lockb /temp/prod/
-RUN cd /temp/prod && bun install --frozen-lockfile --production
+COPY --chown=bun:bun package.json bun.lockb /tmp/prod/
+RUN cd /tmp/prod && bun install --frozen-lockfile --production
 
 # Copy node_modules from temp directory
 # Then copy all (non-ignored) project files into the image
 FROM base AS prerelease
-COPY --from=install /temp/dev/node_modules /app/node_modules
-COPY . /app
+COPY --from=install /tmp/prod/node_modules node_modules
+COPY . .
+
+# [optional] tests & build
+ENV NODE_ENV=production
+RUN bun test
+RUN bun run build.ts
 
 # Copy production dependencies and source code into final image
 FROM base AS release
-COPY --from=install /temp/prod/node_modules /app/node_modules
-COPY --from=prerelease /app /app
+COPY --from=prerelease /app/out .
 
 # Environmental Variables
 ARG DB_HOST=default_host
@@ -47,4 +51,4 @@ UNSHORTEN_API=$UNSHORTEN_API
 # run the app
 USER bun
 EXPOSE 3000/tcp
-ENTRYPOINT [ "bun", "run", "src/routes/index.ts" ]
+ENTRYPOINT [ "bun", "index.js" ]
