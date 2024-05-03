@@ -1,7 +1,7 @@
 # vvtoonA
-<div style="text-align:center">
-    <img src='logo.png' alt='logo'>
-</div>
+![logo](logo.png)
+
+![github actions status](https://github.com/vvtoonA/node/actions/workflows/docker-image.yml/badge.svg?event=push)
 
 ## BUILD
 * bun + express
@@ -17,9 +17,7 @@
     - Kakao OAuth
 
 ## ERD   
-<div style="text-align:center">
-    <img src='vvtoonA.png' alt='logo'>
-</div>
+![ERD](vvtoonA.png)
 
 ## INTRO
 * 웹툰 보는데 여기저기 산재해 있어서 하나에서 몰아보고 싶다(북마크).
